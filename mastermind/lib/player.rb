@@ -1,5 +1,4 @@
 require 'paint'
-require 'active_support/inflector'
 
 module Mastermind
 	require_relative 'extensions/array_methods.rb'
