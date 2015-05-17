@@ -1,0 +1,2 @@
+gem 'fancy_irb'
+require 'active_support/inflector'
