@@ -1,5 +1,4 @@
 require_relative 'square.rb'
-require '../binary-tree/tree.rb'
 
 def knight_moves(position, target)
 	root_square = Square.new(position)
