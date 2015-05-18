@@ -1,0 +1,7 @@
+--- !ruby/object:Hangman
+over: false
+filename: "/game2.yaml"
+word: INVALIDISM
+guessed_letters: []
+playing: true
+guesses_remaining: 6

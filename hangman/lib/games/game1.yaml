@@ -1,0 +1,17 @@
+--- !ruby/object:Hangman
+filename: "/game1.yaml"
+word: SCRIPTURE
+guessed_letters:
+- A
+- S
+- R
+- O
+- I
+- T
+- C
+- P
+- U
+- E
+playing: false
+guesses_remaining: 4
+over: true
