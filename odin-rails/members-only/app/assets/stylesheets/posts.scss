@@ -1,0 +1,18 @@
+/*// Place all the styles related to the Posts controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+*/
+.post-container {
+	position: relative;
+	width: 400px;
+	margin: 0 auto;
+
+	p {
+		text-indent: 2em
+	}
+	span {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+}
