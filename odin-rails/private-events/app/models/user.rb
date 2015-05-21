@@ -1,4 +1,19 @@
 class User < ActiveRecord::Base
 
 	has_many :events, foreign_key: :creator_id
+
+	has_many :attendances, foreign_key: :attendee_id
+	has_many :attended_events, through: :attendances
+
+	def can_attend?(event)
+		!is_creator_of(event) && !is_attending(event)
+	end
+
+	def is_creator_of(event)
+		event.creator == self
+	end
+
+	def is_attending(event)
+		attended_events.include? event
+	end
 end

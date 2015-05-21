@@ -9,6 +9,7 @@
 def create_data
 	create_users
 	create_events
+	create_attendances
 end
 
 def create_users
@@ -34,8 +35,25 @@ def create_events
 	end
 end
 
+def create_attendances
+	puts "CREATING ATTENDANCES"
+	Event.all.each do |event|
+		n = rand(User.all.length) + 3
+		n.times do
+			u = rand(User.all.length) + 1
+			user = User.find(u)
+			if user.can_attend?(event)
+				event.attendances.create(attendee: user)
+				puts "#{user.name} attending #{event.name}"
+			end
+		end
+	end
+end
+
 User.destroy_all
 Event.destroy_all
 User.reset_pk_sequence
 Event.reset_pk_sequence
+Attendance.destroy_all
+Attendance.reset_pk_sequence
 create_data
