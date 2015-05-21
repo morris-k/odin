@@ -6,6 +6,6 @@
 
 <ul class="attendee-list">
 	<% @event.attendees.each do |attendee| %>
-		<li><%= link_to attendee.name, attendee %> is attending this event </li>
+		<li><%= link_to user_name(attendee), attendee %> <%= attend_tense(@event, attendee) %> this event </li>
 	<% end %>
 </ul>

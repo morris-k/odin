@@ -8,7 +8,8 @@
 			<li class="dropdown">
 				<a href="#" class="dropdown-toggle", data-toggle = "dropdown"><span class="glyphicon glyphicon-user"></a>
 				<ul class="dropdown-menu" role="menu">
-					<li><%= link_to "My Account", current_user %> </li>
+					<li><%= link_to "My Account", profile_path(current_user) %> </li>
+					<li><%= "Invitations (#{current_user.invitations.count})"%></li>
 					<li><%= link_to 'Create Event', new_event_path %></li>
 					<div class="divider"></div>
 					<li><%= link_to 'Sign Out', logout_path, method: 'delete' %></li>

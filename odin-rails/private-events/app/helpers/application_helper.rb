@@ -12,4 +12,10 @@ module ApplicationHelper
 		user == current_user ? "are" : "is"
 	end
 
+	def attend_tense(event, user)
+		event.is_upcoming ? 
+				"#{user_is(user)} attending" :
+				"attended"
+	end
+
 end

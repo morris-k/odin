@@ -1,6 +1,10 @@
 class EventsController < ApplicationController
   def new
   	@event = Event.new
+    @invitable = User.all.select{|u| u != current_user }.map{|x| [x.id, x.name]}
+    @invitable.each do |i|
+      @event.invites.build
+    end
   end
 
   def create
@@ -23,6 +27,6 @@ class EventsController < ApplicationController
 
   private
   	def event_params
-  		params.require(:event).permit(:name, :description, :date)
+  		params.require(:event).permit(:name, :description, :date, :invitee_ids => [])
   	end
 end

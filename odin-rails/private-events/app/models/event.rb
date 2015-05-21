@@ -5,6 +5,9 @@ class Event < ActiveRecord::Base
 
 	belongs_to :creator, class_name: 'User'
 
+	has_many :invites, foreign_key: :invited_event_id
+	has_many :invitees, through: :invites
+
 	has_many :attendances, foreign_key: :attended_event_id
 	has_many :attendees, through: :attendances
 
@@ -19,4 +22,9 @@ class Event < ActiveRecord::Base
 	def is_upcoming
 		Event.future.include? self
 	end
+
+	def invite(user)
+	end
+
+
 end

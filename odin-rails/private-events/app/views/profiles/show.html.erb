@@ -1,0 +1,23 @@
+<h1><%= @user.name %></h1>
+
+<div class="col-md-10 col-md-offset-1" id="profile-tabs-container" role="tabpanel">
+	<ul class="nav nav-tabs">
+		<li class="active"><a href="#my-events" data-toggle="tab">Events</a></li>
+		<li><a href="#upcoming-events" data-toggle="tab">Upcoming Events</a></li>
+		<li><a href="#invitations" data-toggle="tab">Invitations</a></li>
+	</ul>
+
+	<div class="tab-content">
+		<div role="tab-panel" class="tab-pane active" id="my-events">
+			<%= render @user.events %>
+		</div> 
+		<div role="tab-panel" class="tab-pane" id="upcoming-events">
+			<%= render @user.upcoming_events %>
+		</div>
+			<div role="tab-panel" class="tab-pane" id="invitations">
+				<% @invites.each do |invite| %>
+					<%= render 'invites/invite', :@invite => invite %>
+				<% end %>
+		</div>
+	</div>
+</div>

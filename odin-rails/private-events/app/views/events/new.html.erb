@@ -4,5 +4,6 @@
 	<%= f.input :date, as: :datetime, start_year: Date.today.year,
 													end_year: Date.today.year + 5,
 													order: [:month, :day, :year], discard_minutes: true, ampm: true %><br>
+	<%= f.association :invitees, as: :check_boxes, collection: User.all.select{|x| x != current_user } %>
 	<%= f.submit %>
 <% end %>
