@@ -1,0 +1,16 @@
+<table class="table table-striped">
+	<tr>
+		<th>Event</th>
+		<th>Host</th>
+		<th col-span="3">Description</th>
+		<th>When</th>
+	</tr>
+	<% @events.each do |event| %>
+	<tr>
+		<td><%= link_to event.name, event %></td>
+		<td><%= link_to event.creator.name, event.creator %></td>
+		<td><%= event.description %></td>
+		<td><%= event.formatted_date %></td>
+	</tr>
+	<% end %>
+</table>
