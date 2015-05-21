@@ -1,5 +1,10 @@
 <h1><%= @user.name %></h1>
 
-<% @user.events.each do |event| %>
-	<%= render 'event', event: event %>
-<% end %>
+<h3><%= user_possessive(@user).capitalize %> events</h3>
+<%= render @user.events %>
+
+<h3>Events <%= "#{user_name(@user)} #{user_is(@user)}" %> attending</h3>
+<%= render @upcoming_events %>
+
+<h3>Events <%= user_name(@user) %> attended </h3>
+<%= render @previous_events %>

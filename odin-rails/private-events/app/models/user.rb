@@ -16,4 +16,12 @@ class User < ActiveRecord::Base
 	def is_attending(event)
 		attended_events.include? event
 	end
+
+	def upcoming_events
+		attended_events.select{ |event| event.is_upcoming }
+	end
+
+	def previous_events
+		attended_events.select{ |event| event.is_past }
+	end
 end

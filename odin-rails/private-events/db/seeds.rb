@@ -30,7 +30,7 @@ def create_events
 		name = Faker::Company.catch_phrase.split(" ").map{|x| x.capitalize}.join(" ")
 		user.events.create(name: name,
 												description: Faker::Hacker.say_something_smart,
-												date: Faker::Time.forward(10))
+												date: Faker::Time.between(10.days.ago, Faker::Time.forward(10)))
 		puts "created event #{name}"
 	end
 end
