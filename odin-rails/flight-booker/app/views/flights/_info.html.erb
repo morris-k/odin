@@ -1,4 +1,7 @@
-<p>Flight departing from <%= flight.to_airport.location %>
-	on <%= flight.start_time.strftime("%B %d, %Y") %>
-	arriving at <%= flight.to_airport.location %> 
-	in <%= formatted_duration(flight) %></p>
+<h1><%= flight.from_airport.code %>  <small class="glyphicon glyphicon-arrow-right"></small> <%= flight.to_airport.code %><h1> 
+		<h2><%= formatted_departure(flight) %></h2>
+		<div class="flight-times">
+			<h3>Departure Time: <%= "   " + formatted_departure_time(flight) %></h3>
+			<h3>Arrival Time: <%= "   " + formatted_arrival(flight) %></h3>
+		</div>
+		<h6>Duration: <%= formatted_duration(flight) %></h3>

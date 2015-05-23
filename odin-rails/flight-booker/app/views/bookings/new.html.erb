@@ -2,19 +2,29 @@
 
 	<%= f.hidden_field :flight_id, value: @flight.id %>
 
-	<%= render 'flights/info', flight: @flight %>
+<div class="page-header">
+	<h1><%= render 'flights/info', flight: @flight %></h1>
+</div>
 
-	<%= f.fields_for :passengers do |p| %>
-	<div>
-		<%= p.label :name %>
-		<%= p.text_field :name %>
-	</div>
-	<div>
-		<%= p.label :email %>
-		<%= p.email_field :email %>
-	</div>
+	<% @booking.passengers.each_with_index do |pass, i| %>
+			<%= f.fields_for :passengers, pass do |p| %>
+			<fieldset class="passenger-form">
+				<legend>Passenger <%= i + 1 %></legend>
+				<div class="form-group">
+					<%= p.label :name %>
+					<%= p.text_field :name %>
+				</div>
+				<div class="form-group">
+					<%= p.label :email %>
+					<%= p.email_field :email %>
+				</div>
+			</fieldset>
+		<% end %>
 	<% end %>
 
-	<%= f.submit "Book flight" %>
+	<div class="form-actions">
+		<%= f.submit "Book flight", :class => 'btn btn-primary' %>
+	</div>
 
 <% end %>
+<%= link_to "Cancel", root_path %>
