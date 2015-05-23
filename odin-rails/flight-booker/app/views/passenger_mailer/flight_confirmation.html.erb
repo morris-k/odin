@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Your booking with OdinAir</h1>
+    <div>
+      <h2>Your flight</h2>
+      <h3> <%= @flight.from_airport.code %>  to <%= @flight.to_airport.code %><h3> 
+      <h3><%= @flight.start_time.strftime("%B %d, %Y") %></h3>
+      <h3>Departure time: <%= @flight.start_time.strftime("%l:%m %p") %></h3>
+      <h3>Arrival Time: <%= @flight.arrival_time.strftime("%l:%m %p") %></h3>
+    </div>
+    <p>Thanks for flying with us!</p>
+  </body>
+</html>
