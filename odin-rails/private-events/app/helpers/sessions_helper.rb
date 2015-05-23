@@ -20,6 +20,7 @@ module SessionsHelper
 	end
 
 	def log_out
+		cookies.delete(:user_id)
 		current_user = nil
 	end
 

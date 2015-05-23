@@ -12,6 +12,8 @@ def create_data
 	create_attendances
 	create_invites
 	accept_invites
+
+	user_for_invites
 end
 
 def create_users
@@ -78,6 +80,13 @@ def accept_invites
 			invite.invitee.attend(invite.invited_event)
 			puts "#{invite.invitee.name} accepted the invitation to #{invite.invited_event.name}"
 		end
+	end
+end
+
+def user_for_invites
+	u = User.create(name: "Invites Tester", email: "it@example.com")
+	Event.future.each do |e| 
+		u.invite_to(e)
 	end
 end
 

@@ -1,0 +1,3 @@
+$('li[data-invite="<%= escape_javascript(@invite.id.to_s) %>"].accept').html("<%= escape_javascript(render 'invites/invite_accepted') %>");
+$('a[data-tab-active="#invitations"]').text("Invitations: (<%= escape_javascript(@invite.invitee.pending_invitations.count.to_s) %>)");
+$('#upcoming-events').html("<%= escape_javascript( render @invite.invitee.upcoming_events) %>");

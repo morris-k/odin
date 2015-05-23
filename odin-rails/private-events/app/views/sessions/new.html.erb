@@ -1,0 +1,7 @@
+<%= form_for(:session, url: login_path, method: :post) do |f| %>
+
+	<%= f.label :email %>
+	<%= f.text_field :email %>
+
+	<%= f.submit 'Log In' %>
+<% end %>

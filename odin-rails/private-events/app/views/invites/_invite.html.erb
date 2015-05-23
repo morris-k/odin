@@ -1,7 +1,4 @@
-<ul class="list-group-inline">
-	<li>
-		<% if !@invite.nil? %>
-			<%= link_to @invite.event_name, event_path(@invite.invited_event) %></li>
-		<%= render "invite_accept" %>
-		<% end %>
-</ul>
+<li class="invite-opt accept" data-invite=<%= @invite.id %>>
+	<%= render "invites/invite_accept" %>
+	<%= render "invites/invite_decline" %>
+</li> 

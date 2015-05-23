@@ -7,17 +7,26 @@
 		<li><a href="#invitations" data-toggle="tab">Invitations</a></li>
 	</ul>
 
-	<div class="tab-content">
+	<div class="tab-content"> 
 		<div role="tab-panel" class="tab-pane active" id="my-events">
 			<%= render @user.events %>
 		</div> 
 		<div role="tab-panel" class="tab-pane" id="upcoming-events">
 			<%= render @user.upcoming_events %>
 		</div>
-			<div role="tab-panel" class="tab-pane" id="invitations">
-				<% @invites.each do |invite| %>
-					<%= render 'invites/invite', :@invite => invite %>
-				<% end %>
+		<div role="tab-panel" class="tab-pane" id="invitations">
+			<% @invites.each do |invite| %>
+			<div class="row invite-list" data-event=<%= invite.invited_event.id %>>
+				<div class="pull-left">
+				<%= link_to invite.event_name, event_path(invite.invited_event) %>
+				</div>
+				<div class="pull-right">
+					<ul class="list-inline invite-list clearfix">
+						<%= render 'invites/invite', :@invite => invite %>
+					</ul>
+				</div>
+			</div>
+			<% end %>
 		</div>
 	</div>
 </div>

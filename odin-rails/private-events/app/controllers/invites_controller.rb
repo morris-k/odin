@@ -4,19 +4,28 @@ class InvitesController < ApplicationController
 	end
 
 	def accept
-		invite = Invite.find(params[:id])
-		invite.accept!
-		current_user.attend(invite.invited_event)
-		redirect_to profile_path(current_user)
+		@invite = Invite.find(params[:id])
+		if @invite.accept!
+			current_user.attend(@invite.invited_event)
+			respond_to do |format|
+				format.html { redirect_to profile_path(current_user) }
+				format.js
+			end
+		end
 	end
 
-	def destroy
-		invite = Invite.find(params[:id])
-		if invite.decline!
-			redirect_to root_path
+	def decline
+		@invite = Invite.find(params[:id])
+		if @invite.destroy
+			respond_to do |format|
+				format.html { redirect_to profile_path(current_user) }
+				format.js
+			end
 		else
-			flash[:danger] = "something went wrong"
-			redirect_to root_path
+			respond_to do |format|
+				format.html { redirect_to profile_path(current_user) }
+				format.js { alert('something went wrong')}
+			end
 		end
 	end
 

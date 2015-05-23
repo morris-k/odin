@@ -2,10 +2,10 @@
 	<tr>
 		<th>Event</th>
 		<th>Host</th>
-		<th col-span="3">Description</th>
+		<th>Description</th>
 		<th>When</th>
 	</tr>
-	<% @events.each do |event| %>
+	<% events.each do |event| %>
 	<tr>
 		<td><%= link_to event.name, event %></td>
 		<td><%= link_to event.creator.name, event.creator %></td>
