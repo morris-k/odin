@@ -4,8 +4,16 @@
 
 <p><%= @event.description %></p>
 
+<h6>Attending</h6>
 <ul class="attendee-list">
 	<% @event.attendees.each do |attendee| %>
-		<li><%= link_to user_name(attendee), attendee %> <%= attend_tense(@event, attendee) %> this event </li>
+		<li> <%= link_to user_name(attendee), attendee %> </li>
+	<% end %>
+</ul>
+
+<h6>Invited </h6>
+<ul class="invitee-list">
+	<% @invitees.each do |invitee| %>
+		<li><%= link_to user_name(invitee), invitee %> </li>
 	<% end %>
 </ul>

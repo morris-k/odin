@@ -18,6 +18,7 @@ class EventsController < ApplicationController
 
   def show
   	@event = Event.find(params[:id])
+    @invitees = @event.pending_invitees
   end
 
   def index

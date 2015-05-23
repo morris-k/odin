@@ -51,4 +51,8 @@ class User < ActiveRecord::Base
 		def pending_invitations
 			invitations.select{|i| i.status == 'pending'}
 		end
+
+		def pending_events
+			invited_events.select{|e| pending_invitations.map{|x| x.invited_event_id }.include? e.id }
+		end
 end

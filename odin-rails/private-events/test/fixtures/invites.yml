@@ -3,9 +3,14 @@
 one:
   invitee_id: 1
   invited_event_id: 1
-  status: MyString
+  status: pending
 
 two:
   invitee_id: 1
-  invited_event_id: 1
-  status: MyString
+  invited_event_id: 2
+  status: pending
+
+three:
+  invitee_id: 1
+  invited_event_id: 3
+  status: accepted

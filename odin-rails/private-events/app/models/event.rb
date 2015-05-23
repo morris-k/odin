@@ -23,7 +23,8 @@ class Event < ActiveRecord::Base
 		Event.future.include? self
 	end
 
-	def invite(user)
+	def pending_invitees
+		invitees.select{|i| invites.select{|x| x.status == "pending" }.map{|x| x.invitee_id }.include? i.id}
 	end
 
 
