@@ -1,0 +1,23 @@
+<%= form_tag(flights_path, method: :get) do |f| %>
+	<%= hidden_field_tag :search %>
+
+	<div class="form-group">
+		<%= select_tag :from_airport, options_for_select(@to_airports), prompt: "From..." %>
+	</div>
+
+	<div class="form-group">
+		<%= select_tag :to_airport, options_for_select(@from_airports), prompt: "To..." %>
+	</div>
+
+	<div class="form-group">
+		<%= select_tag :date, options_for_select(@dates), prompt: "Departing on..." %>
+	</div>
+
+	<div class="form-group">
+		<%= select_tag :num_passengers, options_for_select(@passengers), prompt: "Number of passengers" %>
+	</div>
+
+	<div class="form-actions">
+		<%= submit_tag "Search for Flights" %>
+	</div>
+<% end %>

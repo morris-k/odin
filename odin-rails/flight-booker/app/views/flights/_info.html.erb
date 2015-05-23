@@ -1,0 +1,4 @@
+<p>Flight departing from <%= flight.to_airport.location %>
+	on <%= flight.start_time.strftime("%B %d, %Y") %>
+	arriving at <%= flight.to_airport.location %> 
+	in <%= formatted_duration(flight) %></p>

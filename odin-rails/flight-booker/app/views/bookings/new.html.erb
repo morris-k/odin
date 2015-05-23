@@ -1,0 +1,20 @@
+<%= form_for @booking do |f| %>
+
+	<%= f.hidden_field :flight_id, value: @flight.id %>
+
+	<%= render 'flights/info', flight: @flight %>
+
+	<%= f.fields_for :passengers do |p| %>
+	<div>
+		<%= p.label :name %>
+		<%= p.text_field :name %>
+	</div>
+	<div>
+		<%= p.label :email %>
+		<%= p.email_field :email %>
+	</div>
+	<% end %>
+
+	<%= f.submit "Book flight" %>
+
+<% end %>

@@ -1,0 +1,13 @@
+<%= form_tag(new_booking_path, method: :get) do |f| %>
+	<%= hidden_field_tag :num_passengers, @num_passengers %>
+	
+	<% @flights.each do |flight| %>
+	<div>
+		<%= radio_button_tag :flight_id, flight.id %>
+		<%= formatted_duration(flight) %>
+	</div>
+	<% end %>
+	<div>
+		<%= submit_tag "Book" %>
+	</div>
+<% end %>
