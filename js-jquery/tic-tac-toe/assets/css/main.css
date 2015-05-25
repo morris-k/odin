@@ -22,6 +22,15 @@ html, body {
     *zoom: 1;  
 }  
 
+.container {
+    padding: 2em;
+}
+
+h1 {
+    text-align: center;
+    font-size: 32px;
+    padding: 1em;
+}
 #board {
     width: 246px;
     margin: 0 auto;
@@ -38,8 +47,25 @@ html, body {
     background: #fff;
     text-align: center;
 }
-.errors {
+.opts, .errors, .success, .notice {
     text-align: center;
     width: 246px;
     margin: 0 auto;
+}
+
+.cell {
+    font-size: 52px;
+    line-height: 2em;
+}
+
+.errors {
+    color: #f00;
+}
+
+.success {
+    color: #0f0;
+}
+
+.opts {
+    padding: 1em;
 }

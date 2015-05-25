@@ -1,14 +1,18 @@
-$.fn.extend({
-	blank: function() {
-		if ($(this).text() == " " || $(this).text() == "")
-			return true;
-		else
-			return false;
-		end
-	}
-});
+var TicTacToe = (function() {
 
-transpose = function(a) {
+	$.fn.showValue = function() {
+		this.find('p').append(this.data('value'));
+	}
+
+	$.fn.blank = function() {
+		if ($(this).text() == " " || $(this).text() == "") {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
+	transpose = function(a) {
 
   // Calculate the width and height of the Array
   var w = a.length ? a.length : 0,
@@ -41,21 +45,15 @@ transpose = function(a) {
   return t;
 };
 
-var TicTacToe = (function() {
+var GAMESTATE = {
+	playing: 0,
+	over: 1
+}
 
-	$.fn.showValue = function() {
-		this.find('p').append(this.data('value'));
-	}
 
-	TOKENS = {
-		x: "X",
-		y: "O",
-		blank: " "
-	}
-
-	var squares,
-			players,
-			currentPlayer;
+	var players,
+			currentPlayer,
+			gameState;
 
 	function init() {
 		newGame();
@@ -65,15 +63,24 @@ var TicTacToe = (function() {
 		this.token = token;
 	}
 	function newGame() {
+		$('#newgame').text('Reset');
+		gameState = GAMESTATE.playing;
+		clearMessages();
 		$('#board').empty();
 		players = [new Player('X'), new Player('O')];
-		currentPlayer = players.shift();
+		switchPlayers();
 		initSquares();
+		listeners();
+	}
+
+	function showCurrent() {
+		$('.notice').text("Player " + currentPlayer.token + "'s turn")
 	}
 
 	function switchPlayers() {
-		players.push(currentPlayer);
 		currentPlayer = players.shift();
+		players.push(currentPlayer);
+		showCurrent();
 	}
 
 	function getValues(callback) {
@@ -91,13 +98,14 @@ var TicTacToe = (function() {
 		rows.push(vals.slice(6));
 		cols = transpose(rows);
 		diags = [[rows[0][0], rows[1][1], rows[2][2]],
-							[rows[0][3], rows[1][1], rows[2][0]]];
+							[rows[0][2], rows[1][1], rows[2][0]]];
 		return (rows.concat(cols.concat(diags)));
 	}
 
 	function checkForWin() {
 		var vals = getValues(makeRows);
 		var win = false;
+		console.log(vals);
 		$.each(vals, function(i, set) {
 			var toks = 0;
 			for (i=0;i<3;i++) {
@@ -123,7 +131,6 @@ var TicTacToe = (function() {
 	}
 
 	function initSquares() {
-		squares = [];
 		var grid = "";
 		for (i=0; i<3; i++) {
 			for (j=0; j<3; j++) {
@@ -137,7 +144,7 @@ var TicTacToe = (function() {
 		})
 		$('.cell p').css({
 			  'position': 'relative',
-			  'top': '50%',
+			  'top': '55%',
 			  'transform': 'translateY(-50%)'
 		})
 		$('.cell').showValue();
@@ -162,34 +169,56 @@ var TicTacToe = (function() {
 	};
 
 	function playerWins() {
-		alert("Player " + currentPlayer.token + " wins!");
+		clearMessages();
+		$('.success').append("Player " + currentPlayer.token + " wins!");
 		gameOver();
 	}
 
 	function draw() {
-		alert("No one wins!")
+		clearMessages();
+		$('.errors').append("No one wins!");
 		gameOver();
 	}
 
 	function gameOver() {
-		newGame();
-		listeners();
+		gameState = GAMESTATE.over;
+		$('#newgame').text('Play again');
 	}
+
+	function clearMessages() {
+		$('.errors, .success, .notice').empty();
+	}
+
+	function reset() {
+		$('.cell, #newgame').off('click');
+		$(document).off('click');
+		newGame();
+	};
 
 	function listeners() {
 		$('.cell').click(function() {
-			handleCellClick($(this));
-		})
+			if (gameState == GAMESTATE.playing) {
+				handleCellClick($(this));
+			};
+		});
+
+		$('#newgame').click(function() {
+			if (gameState != GAMESTATE.over) {
+				if (confirm("Start the game over?")) {
+					reset();
+				}
+			} else {
+				reset();
+			}
+		});
 	}
 
 	return {
-		init: init,
-		listeners: listeners
+		init: init
 	}
 
 })();
 
 $(document).ready(function() {
 	TicTacToe.init();
-	TicTacToe.listeners();
 });
