@@ -1,0 +1,5 @@
+<%= render 'search_form' %>
+
+<% if @flights %>
+	<%= render 'search_results', :@flights => @flights %>
+<% end %>

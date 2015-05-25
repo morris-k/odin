@@ -1,0 +1,27 @@
+<div class="row search-form">
+	<div class="col-md-10 col-md-offset-1">
+		<%= form_tag(flights_path, method: :get, :class => "form-inline") do |f| %>
+			<%= hidden_field_tag :search %>
+
+			<div class="form-group">
+				<%= select_tag :from_code, options_for_select(@from_airports), prompt: "From...", :class => "form-control" %>
+			</div>
+
+			<div class="form-group">
+				<%= select_tag :to_code, options_for_select(@to_airports), prompt: "To...", :class => "form-control"  %>
+			</div>
+
+			<div class="form-group">
+				<%= select_tag :date, options_for_select(@dates), prompt: "Departing on...", :class => "form-control"  %>
+			</div>
+
+			<div class="form-group">
+				<%= select_tag :num_passengers, options_for_select(@passengers), prompt: "Number of passengers", :class => "form-control"  %>
+			</div>
+
+			<div class="form-group">
+				<%= submit_tag "Search for Flights", :class => "btn btn-primary"  %>
+			</div>
+		<% end %>
+	</div>
+</div>

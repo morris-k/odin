@@ -1,0 +1,31 @@
+<div class="row search-results">
+<div class="result-params">
+	<h3>Flights from <%= @from %> to <%= @to %> on <%= formatted_date(@date) %></h3>
+</div>
+<% if @flights.any? %>
+	<div class="col-md-12">
+		<%= form_tag(new_booking_path, method: :get) do |f| %>
+			<%= hidden_field_tag :num_passengers, @num_passengers %>
+			<table class="table table-condensed">
+				<tr>
+					<th></th>
+					<th>Departure Time</th>
+					<th>Duration</th>
+				</tr>
+					<% @flights.each do |flight| %>
+				<tr>
+					<td>
+						<%= radio_button_tag :flight_id, flight.id %>
+					</td>
+					<td><%= formatted_departure_time(flight) %></td>
+					<td><%= formatted_duration(flight) %></td>
+					</div>
+					<% end %>
+			</table>
+			<div>
+				<%= submit_tag "Book" %>
+			</div>
+		<% end %>
+	</div>
+<% end %>
+</div>

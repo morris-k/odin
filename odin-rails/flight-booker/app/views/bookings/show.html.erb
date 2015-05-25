@@ -1,0 +1,22 @@
+<div class="row">
+<fieldset>
+	<legend>Your Flight</legend>
+	<div>
+	<%= render 'flights/info', flight: @booking.flight %>
+	</div>
+</fieldset>
+</div>
+<div class="row">
+	<fieldset>
+	<legend>Passenger information</legend>
+<% @booking.passengers.each do |passenger| %>
+	<div class="passenger col-md-4">
+		<h5>Name: <%= passenger.name %></h5>
+		<h5>Email: <%= passenger.email %></h5>
+	</div>
+<% end %>
+</fieldset>
+</div>
+<div class="row">
+<%= link_to "Book another flight", root_path %>
+</div>
