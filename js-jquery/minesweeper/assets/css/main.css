@@ -4,7 +4,11 @@ html, body {
 	height: 100%;
 	width: 100%;
 }
+
 body {
+    position: relative;
+}
+* {
     -webkit-font-smoothing: antialiased;
     box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -22,21 +26,90 @@ body {
     *zoom: 1;  
 }  
 
-
-table {
+.container {
+    position: relative;
     margin: 0 auto;
+    margin-top: 2em;
 }
 
+#board {
+    position: absolute;
+    display: block;
+    left: 0;
+    height: 100%;
+}
 
-tr {
+#board table {
+    border: 2px solid #ccc; 
+    border-top: none;
+    background: #aaa;
+}
+
+#board thead {
+    width: inherit;
+    height: 30px;
+}
+
+#minecount {
+    position: absolute;
+    left: 2px;
+}
+
+#smiley {
+    position: absolute;
+    left: 50%;
+    margin-left: -15px;
+}
+#timer {
+   position: absolute;
+   right: 2px;
+   min-width: 50px;
+}
+
+#minecount, #timer {
+    font-family: "Impact";
+    color: #f00;
+    background: #000;
+    padding: 3px 5px;
+    text-align: center;
+}
+
+#board tr {
     display: block;
     margin: 0;
     padding: 0;
     height: 16px;
 }
-
-img {
+#board img {
     margin: 0;
     padding: 0;
-    vertical-align: middle;
+    vertical-align: top;
+}
+#smiley {
+    background: #000;
+}
+#smiley > img {
+    width: 30px;
+    margin: 0 auto;
+}
+
+#newmenu {
+    position: absolute;
+    width: 350px;
+    z-index: 20;
+    padding: 10px;
+    left: -120px;
+    background: #ccc;
+    border-top: 1px solid #eee;
+    box-shadow: -1px 2px 2px rgba(0,0,0,.9);
+}
+#newmenu th, #newmenu td {
+    padding: 6px 10px;
+}
+
+.numfield {
+    width: 40px;
+}
+a, a:active, a:visited {
+    color: #000;
 }

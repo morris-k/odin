@@ -4,13 +4,64 @@
 		<link type='text/css' rel='stylesheet' href='assets/css/main.css'>
 	</head>
 	<body>
-		<div class="container">
-			<table id="board">
-				<thead>
-					<th colspan="2"></th>
-				</thead>
-				<tbody></tbody>
-			</table>
+		<div class="container clearfix">
+			<ul class="gameopts">
+				<li id="newgame"><button><a href="#">Game</a></button></li>
+					<div id="newmenu">
+						<table>
+							<thead>
+								<th></th>
+								<th>Difficulty</th>
+								<th>Board size</th>
+								<th>Mines</th>
+							</thead>
+							<tbody>
+								<tr>
+									<td><input type="radio" name="boardopt" value="beginner"></td>
+									<td>Beginner</td>
+									<td>9x9</td>
+									<td>10</td>
+								</tr>
+								<tr>
+									<td><input type="radio" name="boardopt" value="intermediate"></td>
+									<td>Intermediate</td>
+									<td>16x16</td>
+									<td>40</td>
+								</tr>
+								<tr>
+									<td><input type="radio" name="boardopt" value="expert"></td>
+									<td>Expert</td>
+									<td>30x16</td>
+									<td>99</td>
+								</tr>
+								<tr>
+									<td><input type="radio" name="boardopt"  value="custom"></td>
+									<td>Custom</td>
+									<td>
+										<input title="Enter a number between 9 and 30" class="numfield" type='number' name="boardWidth" min="9" max="30"> 
+										x 
+										<input class="numfield" title="Enter a number between 9 and 24" type='number' name="boardHeight" min="9" max="24">
+									</td>
+									<td>
+										<input class="numfield" title="Enter a number between 10 and 668" type="number" name="mines" min="10" max="668">
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<button id="newmenu-submit">Go!</button>
+						<button id="newmenu-cancel">Cancel</button>
+					</div>
+			</ul>
+			<div id="board">
+				<table class="clearfix">
+					<thead class="clearfix">
+						<div id="minecount"></div>
+						<div id="smiley"><img src="assets/images/smiley-default.png"></div>
+						<div id="timer"></div>
+					</thead>
+					<tbody></tbody>
+				</table>
+			</div>
 		</div>
 		<script src='assets/scripts/jquery.js'></script>
 		<script type='text/javascript' src='assets/scripts/minesweeper.js'></script>
