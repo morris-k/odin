@@ -2,27 +2,44 @@ var canvas = document.getElementById("canvas1");
 var ctx = canvas.getContext('2d');
 
 var w = 600, 
-		h = 400;
+		h = 450;
 canvas.width = w;
 canvas.height = h;
 
-GAMESTATE = {
-	start: 0,
-	playing: 1,
-	paused: 2,
-	over: 3
-}
-
-MISSILE_STATES = {
-	moving: 0,
-	expanding: 1,
-	contracting: 2,
-	exploded: 3
-}
-
-
-
 var missComm = (function() {
+
+	Array.prototype.shuffle = function() {
+		current = this.length - 1;
+		while (current > 0) {
+			temp = this[current];
+			n = Math.round(Math.random()*current);
+			this[current] = this[n];
+			this[n] = temp;
+			current--;
+		}
+		return this;
+	}
+
+	GAMESTATE = {
+		start: 0,
+		playing: 1,
+		paused: 2,
+		over: 3
+	}
+
+	MISSILE_STATES = {
+		moving: 0,
+		expanding: 1,
+		contracting: 2,
+		exploded: 3
+	}
+
+	GAMESPEED = {
+		normal: 5,
+		faster: 3,
+		fastest: 1
+	}
+
 
 	var bases,
 			cities,
@@ -30,54 +47,206 @@ var missComm = (function() {
 			baseMissiles,
 			mover,
 			level,
-			gameState;
+			score,
+			rebuildScore,
+			bonusCities,
+			gameState,
+			gameSpeed;
 
 
-	function init() {
-		newGame();
-	}
-
-	function newGame() {
-		gameState = GAMESTATE.start;
-		bases = [];
-		cities = [];
-		level = 1;
-		initBases();
-		initCities();
-		drawStatic();
-		initLevel();
-	}
-
-	function initLevel() {
-		gameState = GAMESTATE.playing;
-		baseMissiles = [];
+	function init(options = {}) {
+		gameSpeed = GAMESPEED.normal;
+		initDefault();
 		incomingMissiles = [];
-		initIncoming();
-		mover = setInterval(nextFrame, 50)
+		endLevel();
+		// if ($.type(options) != undefined) {
+		// 	initDefault();
+		// 	score = options.score || score;
+		// 	level = options.level || level;
+		// 	cities = options.cities || cities;
+		// 	bases = options.bases || bases;
+		// 	rebuildScore = options.rebuildScore || rebuildScore;
+		// 	initLevel();
+		// } else {
+		// 	newGame();
+		// }
 	}
 
-	function nextFrame() {
-		drawStatic();
-		moveMissiles();
-		drawMissiles();
+	function setScore(s) {
+		score = s;
 	}
+
 
 	function drawStatic() {
 		drawCanvas();
+		ctx.fillStyle = "#ff0";
+		ctx.fillRect(0, h-40, canvas.width, 40);
 		bases.forEach(function(base) {
 			base.draw();
 		});
 		cities.forEach(function(city) {
 			city.draw();
-		})
+		});
+	}
+
+	function drawScore() {
+		ctx.beginPath();
+		ctx.font="20px Impact";
+		ctx.fillStyle = "#fff";
+		ctx.fillText("Score: " + score,10,20);
+		ctx.closePath();
+	}
+
+	function centerTextX(text) {
+		var tw = ctx.measureText(text).width;
+		return((canvas.width / 2) - (tw / 2))
+	}
+
+	function endLevelScreen() {
+		blackRect(0,0,canvas.width, canvas.height - 50);
+		ctx.font="30px Impact";
+		ctx.fillStyle = "#fff";
+		centerText("Score Multiplier: " + scoreMultiplier(), 50);
+		endLevelAnimator();
+	}
+
+	function endLevelAnimator() {
+		var unusedMiss = unusedMissiles();
+		var unusedBonus =  unusedMiss * 5 * scoreMultiplier();
+		rebuildScore += unusedBonus;
+		var unMissText = "Unused Missiles: " + unusedMiss;
+
+		var savedCities = cities.filter(notHit).length;
+		var cityBonus = savedCities * 100 * scoreMultiplier();
+
+		rebuildScore += cityBonus;
+		var sCityText = "Saved Cities: " + savedCities;
+
+		showEndScore();
+		var addScore = function(n, inc) {
+			if (n > 0) {
+				score += inc;
+				showEndScore();
+				n -= inc;
+			}
+			return n;
+		}
+
+		var unusedTime = function() {
+			centerText(unMissText, 180);
+			var i = unusedBonus;
+			setTimeout(function() {
+				var x = setInterval(function() {
+					if (i > 0) {
+						i = addScore(i, 3);
+					}
+					if (i == 0) {
+						clearInterval(x);
+						setTimeout(scTime, 2000);
+					}
+				}, 1);
+			}, 500);
+		};
+
+		var scTime = function() {
+			centerText(sCityText, 210);
+			var s = cityBonus;
+			setTimeout(function() {
+				var y = setInterval(function() {
+					if (s > 0) {
+						s = addScore(s, 5);
+					}
+					if (s<= 0) {
+						clearInterval(y);
+						if (checkRebuild() == true) {
+							addRebuild();
+							setTimeout(showRebuild, 1000);
+						} else {
+							setTimeout(startNextLevel, 1000);
+						}
+					}
+				}, 1);
+			}, 500);
+		};
+
+		var showRebuild = function() {
+			console.log("rebuild");
+		}
+
+
+		var timer = function() {
+			setTimeout(unusedTime, 1000);
+		}
+		timer();
+	}
+
+	function centerText(text, height) {
+		ctx.fillStyle = "#fff";
+		ctx.fillText(text, centerTextX(text), height);
+	}
+
+	function addRebuild() {
+		var hitCities = cities.filter(function(city) {return(city.hit == true)})
+		var numRebuild = Math.abs(bonusCities - hitCities.length);
+		while (rebuildScore > 10000) {
+			bonusCities += 1;
+			rebuildScore -= 10000;
+		}
+	}
+
+	function checkRebuild() {
+		var hitCities = cities.filter(function(city) {return(city.hit == true)})
+		if (bonusCities > 0 && hitCities.length > 1) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	function showEndScore() {
+		var sT = "Score: " + score;
+		ctx.fillStyle = "#000";
+		ctx.fillRect(0, 70, canvas.width, 40);
+		ctx.fillStyle = "#fff";
+		centerText(sT, 100);
+	}
+
+	function blackRect(startx, starty, width, height) {
+		ctx.fillStyle = "#000";
+		ctx.fillRect(startx, starty, width, height);
+	}
+
+
+
+	function nextLevelScreen() {
+		var sM = scoreMultiplier();
+		blackRect(0, 0, canvas.width, canvas.height - 100);
+		ctx.fillStyle = "#fff";
+		var levText = "Level " + level;
+		ctx.fillText(levText, 200, 200);
 	}
 
 	function drawCanvas() {
 		ctx.fillStyle = "#000";
 		ctx.fillRect(0, 0, canvas.width, canvas.height);
-		ctx.fillStyle = "#ff0";
-		ctx.fillRect(0, h-40, canvas.width, 40);
 	};
+
+	function drawMissiles() {
+		drawIncoming();
+		drawBase();
+	}
+
+	function drawIncoming() {
+		$.each(incomingMissiles, function(i, missile) {
+			missile.draw();
+		});
+	}
+
+	function drawBase() {
+		$.each(baseMissiles, function(i, missile) {
+			missile.draw();
+		});
+	}
 
 	City.prototype.draw = function() {
 		ctx.beginPath(); 
@@ -207,15 +376,15 @@ var missComm = (function() {
 		}
 	}
 
-	function IncomingMissile(x, y, target) {
-		console.log(target);
+	function IncomingMissile(x, target, delay) {
 		Missile.call(this, { x: x,
-									 y: y,
+									 y: -10,
 									 color: "#f00",
 									 trailColor: "#fff",
 									 targetX: target.x,
 									 targetY: target.y});
 		this.target = target;
+		this.delay = delay;
 		speed = 600 - level*30;
 		this.dx = (this.targetX - this.x) / speed;
 		this.dy = (this.targetY - this.y) / speed;
@@ -225,6 +394,9 @@ var missComm = (function() {
 	IncomingMissile.prototype.constructor = IncomingMissile;
 
 	IncomingMissile.prototype.move = function() {
+		if (this.delay > 0) {
+			this.delay--;
+		}
 		if (this.state == MISSILE_STATES.moving && this.y >= this.targetY) {
 			if (this.target.hit == false) {
 				this.target.hit = true;
@@ -234,7 +406,7 @@ var missComm = (function() {
 			}
 				this.state = MISSILE_STATES.expanding;
 		} 
-		if (this.state == MISSILE_STATES.moving) {
+		if (this.state == MISSILE_STATES.moving && this.delay == 0) {
 			this.x += this.dx;
 			this.y += this.dy;
 		} else {
@@ -243,14 +415,13 @@ var missComm = (function() {
 	}	
 
 	function initIncoming() {
-		for (i=0; i < 10; i++) {
-			var sX = Math.round(Math.random() * canvas.width);
-			var sY = (Math.round(Math.random())) * -1;
-			var target = randIncomingTarget();
-			console.log(target);
-			incomingMissiles.push(new IncomingMissile(sX, sY, target));
+		var possTargets = randIncomingTargets();
+		for (i=0; i < 10 + level; i++) {
+			var sX = Math.floor(Math.random() * canvas.width);
+			var delay = Math.round(Math.random()*200);
+			var target = possTargets.shuffle()[0];
+			incomingMissiles.push(new IncomingMissile(sX, target, delay));
 		}
-		console.log(incomingMissiles);
 	}
 
 
@@ -258,10 +429,10 @@ var missComm = (function() {
 		return(bc.hit == false);
 	}
 
-	function randIncomingTarget() {
-		var possTargets = remainingStations();
-		var target = Math.round(Math.random() * (possTargets.length - 1));
-		return possTargets[target];
+	function randIncomingTargets() {
+		var possTargets = bases.filter(notHit);
+		possTargets = possTargets.concat(cities.filter(notHit).shuffle().slice(0, 3))
+		return(possTargets);
 	}
 
 	function remainingStations() {
@@ -276,8 +447,8 @@ var missComm = (function() {
 									 trailColor: "#fff",
 									 targetX: targetX,
 									 targetY: targetY });
-		this.dx = (this.targetX - this.x) / 50;
-		this.dy = (this.targetY - this.y) / 50;
+		this.dx = (this.targetX - this.x) / 10;
+		this.dy = (this.targetY - this.y) / 10;
 	}
 	BaseMissile.prototype = Object.create(Missile.prototype);
 	BaseMissile.prototype.constructor = BaseMissile;
@@ -300,6 +471,8 @@ var missComm = (function() {
 					Math.abs(missile.x - expMiss.x) <= expMiss.explodeCount &&
 					Math.abs(missile.y - expMiss.y) <= expMiss.explodeCount) {
 				missile.state = MISSILE_STATES.expanding;
+				score += 25*scoreMultiplier();
+				rebuildScore += 25*scoreMultiplier();
 				missile.explode();
 			}
 		})
@@ -408,21 +581,90 @@ var missComm = (function() {
 		baseMissiles = baseMissiles.filter(notExploded);
 	}
 
-	function drawMissiles() {
+
+	function newGame() {
+		gameState = GAMESTATE.start;
+		initDefault();
+		initLevel();
+	}
+
+	function initDefault() {
+		level = 1;
+		score = 0;
+		rebuildScore = 0;
+		bonusCities = 0;
+		bases = [];
+		cities = [];
+		initBases();
+		initCities();
+		drawStatic();
+	}
+
+	function initLevel() {
+		gameState = GAMESTATE.playing;
+		bases.forEach(function(base) {
+			base.missileCount = 10;
+		})
+		baseMissiles = [];
+		incomingMissiles = [];
+		initIncoming();
+		mover = setInterval(nextFrame, gameSpeed*10)
+	}
+
+	function nextFrame() {
+		drawStatic();
+		moveMissiles();
 		drawIncoming();
 		drawBase();
+		drawScore();
+		checkLevelEnd();
 	}
 
-	function drawIncoming() {
-		$.each(incomingMissiles, function(i, missile) {
-			missile.draw();
-		});
+	function scoreMultiplier() {
+		if (level <= 10) {
+			return (Math.round(level / 2));
+		} else {
+			return 6;
+		}
 	}
 
-	function drawBase() {
-		$.each(baseMissiles, function(i, missile) {
-			missile.draw();
+	function unusedMissiles() {
+		var unusedBase = 0;
+		bases.forEach(function(base) {
+			unusedBase += base.missileCount;
 		});
+		return unusedBase;
+	}
+
+	function checkLevelEnd() {
+		if (incomingMissiles.length == 0) {
+			endLevel();
+		};
+	}
+
+	function endLevel() {
+		clearInterval(mover);
+		if (cities.filter(notHit).length == 0) {
+			gameOver()
+		} else {
+			endLevelScreen();
+			level += 1;
+		}
+	}
+
+	function rebuildCity() {
+		var hitCities = cities.filter(function(city) { return city.hit == true; })
+		hitCities.shuffle()[0].hit = false;
+	}
+
+	function startNextLevel() {
+		nextLevelScreen();
+		setTimeout(initLevel, 5000);
+	}
+
+	function gameOver() {
+		drawCanvas();
+		ctx.fillText("game over", 100, 100); 
 	}
 
 	function handleSpacePress() {
@@ -430,7 +672,7 @@ var missComm = (function() {
 			clearInterval(mover);
 			gameState = GAMESTATE.paused;
 		} else if (gameState == GAMESTATE.paused) {
-			mover = setInterval(nextFrame, 50);
+			mover = setInterval(nextFrame, gameSpeed*10);
 			gameState = GAMESTATE.playing;
 		}
 	} 
@@ -455,12 +697,19 @@ var missComm = (function() {
 				}
 			}
 		})
-	}
- 
-	function checkLevelEnd() {
-		return(incomingMissiles.length == 0);
-	}
 
+		$("#fastforward").click(function() {
+			if (gameSpeed == GAMESPEED.normal) {
+				gameSpeed = GAMESPEED.faster;
+			} else if (gameSpeed == GAMESPEED.faster) {
+				gameSpeed = GAMESPEED.fastest;
+			} else {
+				gameSpeed = GAMESPEED.normal;
+			}
+			clearInterval(mover);
+			mover = setInterval(nextFrame, gameSpeed*10)
+		})
+	}
 
 	return {
 		init: init,
@@ -471,6 +720,6 @@ var missComm = (function() {
 
 $(document).ready(function() {
 
-	missComm.init();
+	missComm.init({score: 10000, rebuildScore: 10000});
 	missComm.listeners();
 });
