@@ -2,7 +2,7 @@ var canvas = document.getElementById("canvas1");
 var ctx = canvas.getContext('2d');
 
 var w = 600, 
-		h = 550;
+		h = 400;
 canvas.width = w;
 canvas.height = h;
 
@@ -80,8 +80,11 @@ var missComm = (function() {
 	};
 
 	City.prototype.draw = function() {
-		ctx.beginPath();
+		ctx.beginPath(); 
 		ctx.fillStyle = "#ff0";
+		if (this.hit) {
+			ctx.fillStyle = "#f00";
+		}
 		ctx.moveTo(this.x - 25, this.y);
 		ctx.lineTo(this.x, this.y - 10);
 		ctx.lineTo(this.x + 25, this.y);
@@ -204,16 +207,18 @@ var missComm = (function() {
 		}
 	}
 
-	function IncomingMissile(x, y, targetX, targetY) {
+	function IncomingMissile(x, y, target) {
+		console.log(target);
 		Missile.call(this, { x: x,
 									 y: y,
 									 color: "#f00",
 									 trailColor: "#fff",
-									 targetX: targetX,
-									 targetY: targetY });
-
-		this.dx = (this.targetX - this.x) / 1000;
-		this.dy = (this.targetY - this.y) / 1000;
+									 targetX: target.x,
+									 targetY: target.y});
+		this.target = target;
+		speed = 600 - level*30;
+		this.dx = (this.targetX - this.x) / speed;
+		this.dy = (this.targetY - this.y) / speed;
 	}
 
 	IncomingMissile.prototype = Object.create(Missile.prototype);
@@ -221,6 +226,12 @@ var missComm = (function() {
 
 	IncomingMissile.prototype.move = function() {
 		if (this.state == MISSILE_STATES.moving && this.y >= this.targetY) {
+			if (this.target.hit == false) {
+				this.target.hit = true;
+				if (this.target instanceof Base) {
+					this.target.missileCount = 0;
+				}
+			}
 				this.state = MISSILE_STATES.expanding;
 		} 
 		if (this.state == MISSILE_STATES.moving) {
@@ -232,12 +243,14 @@ var missComm = (function() {
 	}	
 
 	function initIncoming() {
-		for (i=0; i < 2; i++) {
+		for (i=0; i < 10; i++) {
 			var sX = Math.round(Math.random() * canvas.width);
 			var sY = (Math.round(Math.random())) * -1;
 			var target = randIncomingTarget();
-			incomingMissiles.push(new IncomingMissile(sX, sY, target.x, target.y));
+			console.log(target);
+			incomingMissiles.push(new IncomingMissile(sX, sY, target));
 		}
+		console.log(incomingMissiles);
 	}
 
 
@@ -282,11 +295,7 @@ var missComm = (function() {
 	}
 
 	function explodeNearMissiles(expMiss) {
-		console.log(incomingMissiles);
 		$.each(incomingMissiles, function(i, missile) {
-			// console.log(Math.abs(missile.x - expMiss.x));
-			// console.log(expMiss.explodeCount);
-			// console.log(Math.abs(missile.y - expMiss.y))
 			if (missile.state == MISSILE_STATES.moving &&
 					Math.abs(missile.x - expMiss.x) <= expMiss.explodeCount &&
 					Math.abs(missile.y - expMiss.y) <= expMiss.explodeCount) {
@@ -435,19 +444,21 @@ var missComm = (function() {
 		})
 
 		$(canvas).click(function(e) {
-			var coords = canvas.relMouseCoords(e);
-			var targetX = coords.x;
-			var targetY = coords.y;
-			base = chooseBase(targetX);
-			if (base.missileCount > 0) {
-				baseMissiles.push(new BaseMissile(base.x, base.y - 25, targetX, targetY))
-				base.missileCount -= 1;
+			if (gameState == GAMESTATE.playing) {
+				var coords = canvas.relMouseCoords(e);
+				var targetX = coords.x;
+				var targetY = coords.y;
+				base = chooseBase(targetX);
+				if (base.missileCount > 0) {
+					baseMissiles.push(new BaseMissile(base.x, base.y - 25, targetX, targetY))
+					base.missileCount -= 1;
+				}
 			}
 		})
 	}
  
-	function levelEnd() {
-		clearInterval(mover);
+	function checkLevelEnd() {
+		return(incomingMissiles.length == 0);
 	}
 
 
