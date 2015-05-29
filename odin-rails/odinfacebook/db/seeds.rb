@@ -7,8 +7,39 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 def create_data
+
+	create_users
+	create_requests
 end
 
 def create_users
-
+	User.create!(name: "User1", email: "user1@example.com", password: "password")
+	User.create!(name: "User2", email: "user2@example.com", password: "password")
+	10.times do
+		User.create(name: Faker::Name.name, email: Faker::Internet.email, password: 'password')
+	end
 end
+
+def create_requests
+	User.all[1..-1].each do |user|
+		user.request(User.find(1))
+	end
+	User.all.each do |user|
+		r = rand(User.all.length)
+		r.times do 
+			f = rand(User.all.length) + 1
+			friend = User.find(f)
+			if user.can_request(friend)
+				user.request(friend)
+			end
+		end
+	end
+end
+
+def accept_requests
+end
+
+
+User.destroy_all
+User.reset_pk_sequence
+create_data

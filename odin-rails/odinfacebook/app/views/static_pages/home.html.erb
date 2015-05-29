@@ -1,2 +1,9 @@
-<h1>StaticPages#home</h1>
-<p>Find me in app/views/static_pages/home.html.erb</p>
+<% @users.each do |user| %>
+<div>
+	<%= link_to user.name, user %>
+	<% if current_user.can_request(user) %>
+		<%= link_to "Add", friendships_path(friend_id: user.id), method: :post %>
+	<% else %>
+	<% end %>
+</div>
+<% end %>
