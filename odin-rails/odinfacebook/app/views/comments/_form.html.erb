@@ -1,0 +1,10 @@
+<%= form_for(subject.comments.build, method: :post) do |f| %>
+	<%= f.hidden_field :subject_id, value: subject.id %>
+
+	<div class="form-group">
+		<%= f.text_area :body, :class => "form-control" %>
+	</div>
+	<div class="form-actions">
+		<%= f.submit "Comment", :class=> 'btn btn-primary' %>
+	</div>
+<% end %>

@@ -1,0 +1,19 @@
+<div class="comment-container" data-comment=<%= comment.id %>>
+	<div class="comment-header">
+		<%= link_to comment.user.name, comment.user %>
+		<small><%= comment.created_at.strftime("%B %d, %Y, %I:%M %p") %></small>
+	</div>
+	<div class="comment-content">
+		<%= comment.body %>
+	</div>
+	<div class="comment-footer">
+		<div class="likes-count">
+			<%= render 'likes_count', subject: comment %>
+		</div>
+		<div class="comment-controls">
+			<div class="add-like">
+				<%= render 'like_unlike', subject: comment %>
+			</div>
+		</div>
+	</div>
+</div>

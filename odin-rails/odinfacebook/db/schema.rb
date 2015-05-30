@@ -11,10 +11,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150530000433) do
+ActiveRecord::Schema.define(version: 20150530013449) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "comments", force: :cascade do |t|
+    t.integer  "subject_id"
+    t.string   "subject_type"
+    t.integer  "user_id"
+    t.text     "body"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  add_index "comments", ["subject_id"], name: "index_comments_on_subject_id", using: :btree
 
   create_table "friendships", force: :cascade do |t|
     t.integer  "user_id"
@@ -29,14 +40,15 @@ ActiveRecord::Schema.define(version: 20150530000433) do
   add_index "friendships", ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", using: :btree
 
   create_table "likes", force: :cascade do |t|
-    t.integer  "post_id"
+    t.integer  "subject_id"
+    t.string   "subject_type"
     t.integer  "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
-  add_index "likes", ["post_id", "user_id"], name: "index_likes_on_post_id_and_user_id", unique: true, using: :btree
-  add_index "likes", ["post_id"], name: "index_likes_on_post_id", using: :btree
+  add_index "likes", ["subject_id", "subject_type", "user_id"], name: "index_likes_on_subject_id_and_subject_type_and_user_id", unique: true, using: :btree
+  add_index "likes", ["subject_id"], name: "index_likes_on_subject_id", using: :btree
 
   create_table "posts", force: :cascade do |t|
     t.integer  "user_id"

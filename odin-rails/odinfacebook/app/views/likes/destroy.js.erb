@@ -1,3 +1,3 @@
-var postCont = $("div[data-post=<%= escape_javascript(@post.id.to_s) %>]");
-postCont.find(".like-post").html("<%= escape_javascript(render 'like_unlike', post: @post) %>");
-postCont.find(".post-likes").html("<%= escape_javascript(render 'post_likes', post: @post) %>");
+var subjCont = $("div[data-<%= j(@subject.class.to_s.downcase)%>=<%= escape_javascript(@subject.id.to_s) %>]");
+subjCont.find(".likes-count").first().html("<%= escape_javascript(render 'likes_count', subject: @subject) %>");
+subjCont.find(".add-like").first().html("<%= escape_javascript(render 'like_unlike', subject: @subject) %>");

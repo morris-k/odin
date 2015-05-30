@@ -7,13 +7,24 @@
 		<%= post.content %>
 	</div>
 	<div class="row post-footer">
-		<div class="post-likes">
-			<%= render 'post_likes', post: post %>
+		<div class="likes-count">
+			<%= render 'likes_count', subject: post %>
+			<%= render 'user_likes', subject: post %>
 		</div>
 		<div class="post-controls">
-			<div class="like-post">
-				<%= render 'like_unlike', post: post %>
+			<div class="add-like">
+				<%= render 'like_unlike', subject: post %>
 			</div>
 		</div>
+	</div>
+	<div class="row post-comments">
+		<% if post.comments.any? %>
+			<% post.comments.each do |comment| %>
+				<%= render 'comments/comment', comment: comment %>
+			<% end %>
+		<% end %>
+	</div>
+	<div class="row new-comment">
+		<%= render 'comments/form', :subject => post %>
 	</div>
 </div>
