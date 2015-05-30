@@ -1,4 +1,4 @@
-<%= form_for(subject.comments.build, method: :post) do |f| %>
+<%= form_for(subject.comments.build, method: :post, remote: true) do |f| %>
 	<%= f.hidden_field :subject_id, value: subject.id %>
 
 	<div class="form-group">

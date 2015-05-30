@@ -1,30 +1,31 @@
-<div class="post-container col-xs-8 col-xs-offset-2" data-post=<%= post.id %>>
-	<div class="row post-header">
+<div class="post-container" data-post=<%= post.id %>>
+	<div class="post-header">
 		<%= link_to post.user.name, post.user %>
 		<small><%= post.created_at.strftime("%B %d, %Y, %I:%M %p") %></small>
 	</div>
-	<div class="row post-content">
-		<%= post.content %>
-	</div>
-	<div class="row post-footer">
-		<div class="likes-count">
-			<%= render 'likes_count', subject: post %>
-			<%= render 'user_likes', subject: post %>
+	<div class="post-content">
+		<div class="text">
+			<%= post.content %>
 		</div>
-		<div class="post-controls">
+		<div class="controls post-controls">
 			<div class="add-like">
 				<%= render 'like_unlike', subject: post %>
 			</div>
 		</div>
 	</div>
-	<div class="row post-comments">
+	<div class="post-footer">
+		<div class="user-likes">
+			<%= render 'user_likes', subject: post %>
+		</div>
+	</div>
+	<div class="post-comments">
 		<% if post.comments.any? %>
 			<% post.comments.each do |comment| %>
 				<%= render 'comments/comment', comment: comment %>
 			<% end %>
 		<% end %>
 	</div>
-	<div class="row new-comment">
+	<div class="new-comment">
 		<%= render 'comments/form', :subject => post %>
 	</div>
 </div>

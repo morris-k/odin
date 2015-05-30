@@ -21,8 +21,8 @@ class CommentsController < ApplicationController
 	end
 
 	def destroy
-		@subject = @klass.find(params[:subject_id])
-		current_user.like(@subject)
+		@comment = Comment.find(params[:id])
+		@comment.destroy
 		respond_to do |format|
 			format.html { redirect_to root_path}
 			format.js

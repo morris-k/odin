@@ -1,7 +1,81 @@
 @import 'bootstrap-sprockets';
 @import 'bootstrap';
 
+$main_blue: #3b5998;
+$light_gray: #F6F7F8;
+$back_gray: #E9eaed;
+$blue_text: #6D84B4;
+
+
+$note-red: #DC0D17;
+
+
+$color1: #9197a3;
+$color2: #141823;
+
+$color3: #333333;
+$color4: #f6f7f8;
+$color5: #4e5665;
+$color7: #6d84b4;
+$color8: #dfe0e4;
+
+$color9: #232937;
+$color10: #e1e2e3;
+$color11: #e5e6e9;
+$color12: #d0d1d5;
+$color13: #e9eaed;
+$color14: #c5c6c8;
+$color15: #355089;
+$color16: #cccccc;
+$color17: #a2a5ac;
+$color18: #8c8c8c;
+$color19: #2e4588;
+$color20: #d3d7dc;
+$color21: #e5e5e5;
+$color22: #dddddd;
+$color23: #b6b7b9;
+$color24: #c5c5c5;
+$color25: #999999;
+$color26: #ededed;
+$color27: #4e69a2;
+$color28: #3c5488;
+$color29: #cad0db;
+$color30: #dc0d17;
+$color31: #e6e6e6;
+$color32: #435a8b;
+$color33: #f0f0f2;
+$color34: #ccd0db;
+$color35: #737373;
+$color36: #334c83;
+$color37: #dadfea;
+$color38: #e9e9e9;
+$color39: #3a5795;
+$color40: #7e97ba;
+$color41: #aaaaaa;
+$color42: #133783;
+$color43: #fa3c45;
+$color44: #edeef1;
+$color45: #d8deea;
+
 
 body {
-	background: #f9f9f9;
+	background: $back_gray;
+}
+
+.navbar {
+	background: $main_blue;
+	border-radius: 0;
+}
+.comment-header, .comment-content {
+	display: inline-block;
+}
+
+.comment-time {
+	font-weight: bold;
+	color: #4e5665;
+	font-size: 12px;
+}
+
+.controls > div {
+	display: inline-block;
 }

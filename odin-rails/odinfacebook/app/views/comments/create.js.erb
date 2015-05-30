@@ -1,0 +1,3 @@
+var subjCont = $("div[data-<%= j(@subject.class.to_s.downcase)%>=<%= escape_javascript(@subject.id.to_s) %>]");
+subjCont.find(".post-comments").append("<%= escape_javascript(render 'comments/comment', comment: @comment) %>");
+subjCont.find(".new-comment").html("<%= j(render 'comments/form', :subject => @subject) %>")

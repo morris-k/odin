@@ -1,7 +1,3 @@
 <% if subject.liking_users.any? %>
-	<div class="like-info">
-		<ul>
-			<%= show_user_likes(subject.liking_users).html_safe %>
-		</ul>
-	</div>
+	<%= show_user_likes(subject.liking_users).html_safe %>
 <% end %>

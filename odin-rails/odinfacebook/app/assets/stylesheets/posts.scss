@@ -2,10 +2,13 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 */
+$light_gray: #F6F7F8;
 
 .post-container {
+	width: 496px;
+	margin: 0 auto;
 	margin-bottom: 20px;
-	border-radius: 5px;
+	border-radius: 3px;
 	background: #fff;
 	position: relative;
 }
@@ -14,16 +17,17 @@
 	padding: 10px 0 0 12px;
 }
 
-.post-content {
+.post-content, .comment-container {
+	border-bottom: 1px solid #e1e2e3;;
+}
+
+.text {
 	padding: 20px 24px;
-	border-bottom: 1px solid #ccc;
 }
 
 .post-footer {
 	padding: 8px 12px;
- 	> div {
- 		display: inline-block;
- 	}
+	background: $light_gray;
 }
 
 .likes {
@@ -31,10 +35,15 @@
 }
 
 .post-controls {
-	float: right;
+	padding: 4px 10px;
+	font-size: 12px;
 }
 
 .post-comments {
 	padding: 0px 12px;
-	background: #eee;
+	background: $light_gray;
+}
+
+.user-likes {
+	font-size: 12px;
 }
