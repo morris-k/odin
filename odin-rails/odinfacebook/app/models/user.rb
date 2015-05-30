@@ -18,6 +18,8 @@ class User < ActiveRecord::Base
 
   has_many :posts, dependent: :destroy
 
+  has_many :likes, dependent: :destroy
+
   def request(friend)
   	self.pending_friendships.create(friend_id: friend.id)
   end
@@ -58,6 +60,24 @@ class User < ActiveRecord::Base
   def feed
     all_ids = friend_ids << self.id
     Post.where(user_id: all_ids)
+  end
+
+  def like(post)
+    begin
+      likes.create(post_id: post.id)
+    rescue Exception => e 
+      if e.is_a? ActiveRecord::RecordNotUnique
+        return false
+      end
+    end
+  end
+
+  def unlike(post)
+    likes.find_by(post_id: post.id).destroy
+  end
+
+  def likes?(post)
+    post.liking_users.include?(self)
   end
 
 end

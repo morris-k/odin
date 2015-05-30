@@ -4,11 +4,32 @@
 */
 
 .post-container {
-	box-shadow: -2px 2px 1px rgba(0,0,0,.1);
 	margin-bottom: 20px;
+	border-radius: 5px;
+	background: #fff;
+	position: relative;
+}
+
+.post-header {
+	padding: 10px 0 0 12px;
 }
 
 .post-content {
-	padding: 20px 12px;
+	padding: 20px 24px;
+	border-bottom: 1px solid #ccc;
 }
 
+.post-footer {
+	padding: 8px 12px;
+ 	> div {
+ 		display: inline-block;
+ 	}
+}
+
+.likes {
+	float: left;
+}
+
+.post-controls {
+	float: right;
+}

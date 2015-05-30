@@ -1,10 +1,19 @@
-<div class="post-container col-xs-8 col-xs-offset-2">
-	<div class="post-header">
+<div class="post-container col-xs-8 col-xs-offset-2" data-post=<%= post.id %>>
+	<div class="row post-header">
 		<%= link_to post.user.name, post.user %>
+		<small><%= post.created_at.strftime("%B %d, %Y, %I:%M %p") %></small>
 	</div>
-	<div class="post-content">
+	<div class="row post-content">
 		<%= post.content %>
 	</div>
-	<div class="post-footer">
+	<div class="row post-footer">
+		<div class="post-likes">
+			<%= render 'post_likes', post: post %>
+		</div>
+		<div class="post-controls">
+			<div class="like-post">
+				<%= render 'like_unlike', post: post %>
+			</div>
+		</div>
 	</div>
 </div>

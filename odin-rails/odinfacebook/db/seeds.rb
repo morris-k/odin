@@ -22,10 +22,11 @@ def create_users
 end
 
 def create_requests
-	User.all[1..-1].each do |user|
-		user.request(User.find(1))
-	end
 	User.all.each do |user|
+		f1 = User.find(1)
+		if user.can_request(f1)
+			user.request(f1)
+		end
 		r = rand(User.all.length)
 		r.times do 
 			f = rand(User.all.length) + 1
@@ -45,7 +46,7 @@ def create_posts
 		r = rand(5) + 2
 		r.times do 
 			p = user.posts.create(content: Faker::Lorem.paragraph(2))
-			p.update(created_at: Faker::Date.between(10.days.ago, 10.days.from_now))
+			p.update(created_at: Faker::Date.between(10.days.ago, Time.now) - rand(20).hours - rand(59).minutes)
 		end
 	end
 end
