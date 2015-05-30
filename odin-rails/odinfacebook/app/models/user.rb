@@ -16,6 +16,8 @@ class User < ActiveRecord::Base
 																dependent: :destroy
 	has_many :friends, through: :accepted_friendships
 
+  has_many :posts, dependent: :destroy
+
   def request(friend)
   	self.pending_friendships.create(friend_id: friend.id)
   end
@@ -51,6 +53,11 @@ class User < ActiveRecord::Base
   	!self.is_friends_with(user) &&
   	!self.has_requested(user) &&
   	!self.has_been_requested_by(user)
+  end
+
+  def feed
+    all_ids = friend_ids << self.id
+    Post.where(user_id: all_ids)
   end
 
 end

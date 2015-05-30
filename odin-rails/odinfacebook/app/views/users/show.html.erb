@@ -5,3 +5,11 @@
 	<%= friend.name %>
 <% end %>
 </div>
+
+<div class="posts">
+	<% @user.posts.each do |post| %>
+	<div>
+		<%= post.content %>
+	</div>
+	<% end %>
+</div>

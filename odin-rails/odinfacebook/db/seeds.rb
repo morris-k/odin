@@ -10,6 +10,7 @@ def create_data
 
 	create_users
 	create_requests
+	create_posts
 end
 
 def create_users
@@ -39,7 +40,19 @@ end
 def accept_requests
 end
 
+def create_posts
+	User.all.each do |user|
+		r = rand(5) + 2
+		r.times do 
+			p = user.posts.create(content: Faker::Lorem.paragraph(2))
+			p.update(created_at: Faker::Date.between(10.days.ago, 10.days.from_now))
+		end
+	end
+end
+
 
 User.destroy_all
 User.reset_pk_sequence
+Post.reset_pk_sequence
+Friendship.reset_pk_sequence
 create_data
