@@ -1,8 +1,7 @@
 class FriendshipsController < ApplicationController
 	def create
-		@user = current_user
-		friend = User.find(params[:friend_id])
-		@user.request(friend)
+		@friend = User.find(params[:friend_id])
+		current_user.request(@friend)
 		respond_to do |format|
 			format.html { redirect_to root_path }
 			format.js

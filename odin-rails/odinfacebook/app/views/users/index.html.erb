@@ -1,0 +1,6 @@
+<% @users.each do |user| %>
+<div class="user-request" data-user="<%= user.id %>">
+	<%= link_to user.name, user %>
+	<%= link_to "Add", friendships_path(friend_id: user.id), method: :post, :class => 'btn btn-primary add-button', remote: true %>
+</div>
+<% end %>

@@ -80,4 +80,9 @@ class User < ActiveRecord::Base
     subject.liking_users.include?(self)
   end
 
+  def forIndex
+    # ids = User.pluck(ids) - User
+    User.select{|u| self.can_request(u) && self != u}
+  end
+
 end

@@ -8,13 +8,15 @@
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">Friend Requests: <%= current_user.pending_requests.count %></a>
 					<% if current_user.pending_requests.any? %>
-					<ul class="dropdown-menu">
+					<ul class="dropdown-menu request-menu">
 						<% current_user.pending_requests.each do |request| %>
-							<li class="request" id="<%= request.id %>">
+						<ul class="list-inline request" data-request="<%= request.id %>">
+							<li class="name">
 								<%= request.user.name %>
-								<%= link_to "Accept", friendship_path(request), method: :put %>
-								<%= link_to "Reject", friendship_path(request), method: 'delete' %>
 							</li>
+							<li class=""><%= link_to "Accept", friendship_path(request), method: :put %></li>
+							<li><%= link_to "Reject", friendship_path(request), method: 'delete' %></li>
+						</ul>
 						<% end %>
 					</ul>
 					<% end %>
