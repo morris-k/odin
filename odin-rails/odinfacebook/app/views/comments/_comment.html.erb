@@ -1,26 +1,29 @@
 <div class="comment-container" data-comment=<%= comment.id %>>
-	<div class="comment-header">
-		<%= link_to comment.user.name, comment.user %>
+	<div class="comment-avatar">
+		<%= gravatar_for comment.user %>
 	</div>
-	<div class="comment-content">
-		<%= comment.body %>
-	</div>
-	<div class="comment-time">
-		<%= time_ago_in_words(comment.created_at) %>
-	</div>
-	<div class="comment-footer">
-		<div class="user-likes">
-			<%= render 'user_likes', subject: comment %>
+	<div class="comment-right">
+		<div class="comment-header">
+			<%= link_to comment.user.name, comment.user %>
+			<span><%= comment.body %></span>
 		</div>
-		<div class="controls comment-controls">
-			<div class="add-like">
-				<%= render 'like_unlike', subject: comment %>
+		<div class="comment-time">
+			<%= time_ago_in_words(comment.created_at) %> ago
+		</div>
+		<div class="comment-footer">
+			<div class="user-likes">
+				<%= render 'user_likes', subject: comment %>
 			</div>
-			<% if comment.user == current_user %>
-				<div class="delete">
-					<%= link_to 'delete', comment_path(comment), method: :delete, remote: true %>
+			<div class="controls comment-controls">
+				<div class="add-like">
+					<%= render 'like_unlike', subject: comment %>
 				</div>
-			<% end %>
+				<% if comment.user == current_user %>
+					<div class="delete">
+						<%= link_to 'delete', comment_path(comment), method: :delete, remote: true %>
+					</div>
+				<% end %>
+			</div>
 		</div>
 	</div>
 </div>

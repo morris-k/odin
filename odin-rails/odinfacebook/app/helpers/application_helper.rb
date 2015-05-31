@@ -16,4 +16,13 @@ module ApplicationHelper
 	def user_link(user)
 		return link_to(user.name, user)
 	end
+
+	def full_title(page_title = "")
+		base = "Odinfacebook"
+		if page_title.empty?
+			base
+		else
+			page_title
+		end
+	end
 end

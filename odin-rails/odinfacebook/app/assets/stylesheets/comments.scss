@@ -5,13 +5,17 @@
 
 .comment-container {
 	border-bottom: 1px solid #aaa;
+	display: flex;
+}
+
+.comment-header {
+	span {
+		margin-left: 5px;
+	}
 }
 
 .comment-footer {
-	padding: 8px 12px;
- 	> div {
- 		display: inline-block;
- 	}
+
 }
 
 .likes {
@@ -19,5 +23,15 @@
 }
 
 .comment-controls {
-	float: right;
+
+}
+
+.comment-avatar {
+	img {
+		width: 40px;
+	}
+}
+
+.comment-right {
+	margin-left: 5px;
 }
