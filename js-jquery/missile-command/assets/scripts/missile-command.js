@@ -35,9 +35,9 @@ var missComm = (function() {
 	}
 
 	GAMESPEED = {
-		normal: 5,
-		faster: 3,
-		fastest: 1
+		normal: 1000/30,
+		faster: 1000/60,
+		fastest: 1000/90
 	}
 
 
@@ -56,27 +56,37 @@ var missComm = (function() {
 	function startOpts(startState) {
 		switch(startState) {
 			case "endLevel": 
-				initEndLevel();
+				initDefault();
+				endLevel();
+				break;
+			case "withCityBonus":
+				initDefault();
+				score = 10000;
+				rebuildScore = 10000;
+				endLevel();
+				break;
+			case "withBonusAndHit":
+				initDefault();
+				score = 20000;
+				rebuildScore = 20000;
+				cities[0].hit = true;
+				cities[3].hit = true;
+				drawStatic();
+				endLevel();
 				break;
 		}
-	}
-
-	function initEndLevel() {
-		initDefault();
-		incomingMissiles = [];
-		endLevel();
 	}
 
 	function init(options) {
 		gameSpeed = GAMESPEED.normal;
 		gameState = GAMESTATE.start;
 		if (options !== undefined) {
-			startOpts(options.startState);
+			console.log(options)
+			startOpts(options);
 			// initLevel();
 		} else {
 			ctx.font = "30px Impact";
-			drawStartScreen();
-			// newGame();
+			newGame();
 		}
 	}
 
@@ -101,9 +111,6 @@ var missComm = (function() {
 		drawCanvas();
 		centerText("MISSILE COMMAND", 200);
 		centerText("START", 250);
-		canvas.click(function() {
-
-		})
 	};
 
 	function drawScore() {
@@ -120,81 +127,96 @@ var missComm = (function() {
 	}
 
 	function endLevelScreen() {
-		blackRect(0,0,canvas.width, canvas.height - 50);
+		blackRect(0,0,canvas.width, canvas.height - 80);
 		ctx.font="30px Impact";
 		ctx.fillStyle = "#fff";
 		centerText("Score Multiplier: " + scoreMultiplier(), 50);
-		endLevelAnimator();
+		endLevelAnim();
 	}
 
-	function endLevelAnimator() {
+	function endLevelAnim() {
+		showEndScore();
+		drawUnusedTime();
+	}
+	var addScore = function(inc) {
+			score += inc;
+			showEndScore();
+		}
+
+	function drawUnusedTime() {
 		var unusedMiss = unusedMissiles();
 		var unusedBonus =  unusedMiss * 5 * scoreMultiplier();
 		rebuildScore += unusedBonus;
+
 		var unMissText = "Unused Missiles: " + unusedMiss;
+		centerText(unMissText, 180);
+		setTimeout(function() {
+			var m = setInterval(function() {
+				if (unusedMiss > 0) {
+						addScore(1);
+						unusedMiss--;
+				} else {
+					clearInterval(m);
+					setTimeout(drawSavedCities, 1000);
+				}
+			}, 1);
+		}, 1000);
+	}
 
-		var savedCities = cities.filter(notHit).length;
-		var cityBonus = savedCities * 100 * scoreMultiplier();
-
+	function drawSavedCities() {
+		var cityBonus = cities.filter(notHit).length * 100 * scoreMultiplier();
 		rebuildScore += cityBonus;
+		var savedCities = cities.filter(notHit).length;
 		var sCityText = "Saved Cities: " + savedCities;
+		centerText(sCityText, 230);
+		setTimeout(function() {
+			var m = setInterval(function() {
+				if (cityBonus > 0) {
+						addScore(5);
+						cityBonus -= 5;
+				} else {
+					addRebuild();
+					clearInterval(m);
+					setTimeout(drawBonusCities, 1000);
+				}
+			}, 1);
+		}, 1000);
+	}
 
-		showEndScore();
-		var addScore = function(n, inc) {
-			if (n > 0) {
-				score += inc;
-				showEndScore();
-				n -= inc;
-			}
-			return n;
+	function drawBonusCities() {
+		var bCityText = "Bonus Cities Earned: " + bonusCities;
+		centerText(bCityText, 280);
+		var hitCities = 6 - cities.filter(notHit).length
+		if (checkRebuild(hitCities) == true) {
+			var m = setInterval(function() {
+				if (bonusCities > 0 && hitCities > 0) {
+					rebuildCity();
+					cities.forEach(function(city) {
+						city.draw();
+					});
+					blackRect(0, 250, canvas.width, 30);
+					bCityText = "Bonus Cities Earned: " + bonusCities;
+					centerText(bCityText, 280);
+				} else {
+					console.log("next")
+					setTimeout(checkNextLevel, 1000);
+					clearInterval(m);
+				}
+			}, 1000)
+		} else {
+			setTimeout(checkNextLevel, 1000);
 		}
+	}
 
-		var unusedTime = function() {
-			centerText(unMissText, 180);
-			var i = unusedBonus;
-			setTimeout(function() {
-				var x = setInterval(function() {
-					if (i > 0) {
-						i = addScore(i, 3);
-					}
-					if (i == 0) {
-						clearInterval(x);
-						setTimeout(scTime, 2000);
-					}
-				}, 1);
-			}, 500);
-		};
-
-		var scTime = function() {
-			centerText(sCityText, 210);
-			var s = cityBonus;
-			setTimeout(function() {
-				var y = setInterval(function() {
-					if (s > 0) {
-						s = addScore(s, 5);
-					}
-					if (s<= 0) {
-						clearInterval(y);
-						if (checkRebuild() == true) {
-							addRebuild();
-							setTimeout(showRebuild, 1000);
-						} else {
-							setTimeout(startNextLevel, 1000);
-						}
-					}
-				}, 1);
-			}, 500);
-		};
-
-		var showRebuild = function() {
-			console.log("rebuild");
+	function checkNextLevel() {
+		console.log(cities.filter(notHit).length);
+		if (cities.filter(notHit).length == 0) {
+			console.log("go")
+			gameOver();
+		} else {
+			console.log("nl")
+			startNextLevel();
 		}
-
-
-		var timer = function() {
-			setTimeout(unusedTime, 1000);
-		}
-		timer();
 	}
 
 	function centerText(text, height) {
@@ -203,17 +225,14 @@ var missComm = (function() {
 	}
 
 	function addRebuild() {
-		var hitCities = cities.filter(function(city) {return(city.hit == true)})
-		var numRebuild = Math.abs(bonusCities - hitCities.length);
-		while (rebuildScore > 10000) {
+		while (rebuildScore >= 10000) {
 			bonusCities += 1;
 			rebuildScore -= 10000;
 		}
 	}
 
-	function checkRebuild() {
-		var hitCities = cities.filter(function(city) {return(city.hit == true)})
-		if (bonusCities > 0 && hitCities.length > 1) {
+	function checkRebuild(hitCities) {
+		if (bonusCities > 0 && hitCities > 0) {
 			return true;
 		} else {
 			return false;
@@ -266,11 +285,8 @@ var missComm = (function() {
 	}
 
 	City.prototype.draw = function() {
-		ctx.beginPath(); 
 		ctx.fillStyle = "#ff0";
-		if (this.hit) {
-			ctx.fillStyle = "#f00";
-		}
+		ctx.beginPath(); 
 		ctx.moveTo(this.x - 25, this.y);
 		ctx.lineTo(this.x, this.y - 10);
 		ctx.lineTo(this.x + 25, this.y);
@@ -278,7 +294,9 @@ var missComm = (function() {
 		ctx.closePath();
 		ctx.beginPath();
 		ctx.fillStyle = "#0ff";
-		ctx.strokeStyle = "#00f"
+		if (this.hit) {
+			ctx.fillStyle = "#f00";
+		}
 		ctx.moveTo(this.x - 20, this.y - 2);
 		ctx.lineTo(this.x - 18, this.y - 6);
 		ctx.lineTo(this.x - 15, this.y - 6);
@@ -311,7 +329,7 @@ var missComm = (function() {
                   [-7, 7], [7, 7], [0, 0] ];
     for( var i = 0, len = this.missileCount - 1; len > i-1; len-- ) {
       x = this.x + delta[len][0];
-      y = this.y + delta[len][1] - 20;
+      y = this.y + delta[len][1];
       ctx.fillStyle = 'blue';
       ctx.strokeStyle = 'blue';
       ctx.lineWidth = 2;
@@ -368,33 +386,6 @@ var missComm = (function() {
 		}
 	}
 
-
-
-	Missile.prototype.draw = function() {
-		if (this.state === MISSILE_STATES.moving) {
-			ctx.beginPath();
-			ctx.strokeStyle = this.trailColor;
-			ctx.moveTo(this.startX, this.startY);
-			ctx.lineTo(this.x, this.y);
-			ctx.stroke();
-			ctx.closePath();
-			ctx.beginPath();
-			ctx.fillStyle = this.color;
-			ctx.moveTo(this.x, this.y);
-			ctx.arc(this.x, this.y, 5, 0, Math.PI*2);
-			ctx.fill();
-			ctx.closePath();
-		} else if (this.state == MISSILE_STATES.expanding || this.state == MISSILE_STATES.contracting ) {
-			ctx.beginPath();
-			ctx.fillStyle = "#f00";
-			ctx.moveTo(this.x, this.y);
-			ctx.arc(this.x, this.y, this.explodeCount, 0, Math.PI*2);
-			ctx.fill();
-			ctx.closePath();
-			explodeNearMissiles(this);
-		}
-	}
-
 	function IncomingMissile(x, target, delay) {
 		Missile.call(this, { x: x,
 									 y: -10,
@@ -433,9 +424,34 @@ var missComm = (function() {
 		}
 	}	
 
+	IncomingMissile.prototype.draw = function() {
+		if (this.state === MISSILE_STATES.moving) {
+			ctx.beginPath();
+			ctx.strokeStyle = this.trailColor;
+			ctx.moveTo(this.startX, this.startY);
+			ctx.lineTo(this.x, this.y);
+			ctx.stroke();
+			ctx.closePath();
+			ctx.beginPath();
+			ctx.fillStyle = this.color;
+			ctx.moveTo(this.x, this.y);
+			ctx.arc(this.x, this.y, 2, 0, Math.PI*2);
+			ctx.fill();
+			ctx.closePath();
+		} else if (this.state == MISSILE_STATES.expanding || this.state == MISSILE_STATES.contracting ) {
+			ctx.beginPath();
+			ctx.fillStyle = "#f00";
+			ctx.moveTo(this.x, this.y);
+			ctx.arc(this.x, this.y, this.explodeCount, 0, Math.PI*2);
+			ctx.fill();
+			ctx.closePath();
+			explodeNearMissiles(this);
+		}
+	}
+
 	function initIncoming() {
 		var possTargets = randIncomingTargets();
-		for (i=0; i < 10 + level; i++) {
+		for (i=0; i <  10 + level; i++) {
 			var sX = Math.floor(Math.random() * canvas.width);
 			var delay = Math.round(Math.random()*200);
 			var target = possTargets.shuffle()[0];
@@ -461,7 +477,7 @@ var missComm = (function() {
 
 	function BaseMissile(x, y, targetX, targetY) {
 		Missile.call(this, { x: x,
-									 y: h-50,
+									 y: y,
 									 color: "#fff",
 									 trailColor: "#fff",
 									 targetX: targetX,
@@ -484,6 +500,31 @@ var missComm = (function() {
 			this.y += this.dy;
 		} else {
 			this.explode();
+		}
+	}
+
+	BaseMissile.prototype.draw = function() {
+		if (this.state === MISSILE_STATES.moving) {
+			ctx.beginPath();
+			ctx.strokeStyle = this.trailColor;
+			ctx.moveTo(this.startX, this.startY);
+			ctx.lineTo(this.x, this.y);
+			ctx.stroke();
+			ctx.closePath();
+			ctx.beginPath();
+			ctx.fillStyle = this.color;
+			ctx.moveTo(this.x, this.y);
+			ctx.arc(this.x, this.y, 2, 0, Math.PI*2);
+			ctx.fill();
+			ctx.closePath();
+		} else if (this.state == MISSILE_STATES.expanding || this.state == MISSILE_STATES.contracting ) {
+			ctx.beginPath();
+			ctx.fillStyle = "#f00";
+			ctx.moveTo(this.x, this.y);
+			ctx.arc(this.x, this.y, this.explodeCount, 0, Math.PI*2);
+			ctx.fill();
+			ctx.closePath();
+			explodeNearMissiles(this);
 		}
 	}
 
@@ -568,6 +609,7 @@ var missComm = (function() {
 		this.x = options.x;
 		this.y = options.y;
 		this.hit = false;
+		this.rebuilding = false;
 	}
 
 	function initCities() {
@@ -606,8 +648,12 @@ var missComm = (function() {
 
 
 	function newGame() {
-		initDefault();
-		initLevel();
+		drawStartScreen();
+		if (gameState == GAMESTATE.start)
+			$('canvas').one("click", function() {
+				initDefault();
+				initLevel();
+			});
 	}
 
 	function initDefault() {
@@ -623,14 +669,15 @@ var missComm = (function() {
 	}
 
 	function initLevel() {
-		gameState = GAMESTATE.playing;
+		listeners();
 		bases.forEach(function(base) {
 			base.missileCount = 10;
 		})
+		gameState = GAMESTATE.playing;
 		baseMissiles = [];
 		incomingMissiles = [];
 		initIncoming();
-		mover = setInterval(nextFrame, gameSpeed*10)
+		mover = setInterval(nextFrame, gameSpeed)
 	}
 
 	function nextFrame() {
@@ -667,27 +714,30 @@ var missComm = (function() {
 
 	function endLevel() {
 		clearInterval(mover);
-		if (cities.filter(notHit).length == 0) {
-			gameOver()
-		} else {
-			endLevelScreen();
-			level += 1;
-		}
+		resetListeners();
+		endLevelScreen();
 	}
 
 	function rebuildCity() {
 		var hitCities = cities.filter(function(city) { return city.hit == true; })
-		hitCities.shuffle()[0].hit = false;
+		var rebuilt = hitCities.shuffle()[0]
+		bonusCities -= 1;
+		rebuilt.hit = false;
+		rebuilt.rebuilding = true;
+		rebuilt.draw();
 	}
 
 	function startNextLevel() {
+		level++;
 		nextLevelScreen();
-		setTimeout(initLevel, 5000);
+		setTimeout(initLevel, 1000);
 	}
 
 	function gameOver() {
 		drawCanvas();
-		ctx.fillText("game over", 100, 100); 
+		centerText("game over", 100); 
+		centerText("score: " + score, 140);
+		setTimeout(newGame, 5000);
 	}
 
 	function handleSpacePress() {
@@ -695,11 +745,17 @@ var missComm = (function() {
 			clearInterval(mover);
 			gameState = GAMESTATE.paused;
 		} else if (gameState == GAMESTATE.paused) {
-			mover = setInterval(nextFrame, gameSpeed*10);
+			mover = setInterval(nextFrame, gameSpeed);
 			gameState = GAMESTATE.playing;
 		}
 	} 
 
+
+	var resetListeners = function() {
+		$(document).off('keydown');
+		$('canvas').off('click');
+		$("#fastforward").off('click');
+	}
 
 	var listeners = function() {
 		$(document).on('keydown', function(e) {
@@ -710,14 +766,9 @@ var missComm = (function() {
 		})
 
 		$('canvas').click(function(event) {
-			if (gameState == GAMESTATE.playing) {
 				var targetX = (event.pageX - $(this).offset().left);
 				var targetY = (event.pageY - $(this).offset().top);
 				launchMissile(targetX, targetY);
-				return;
-			} else if (gameState == GAMESTATE.start) {
-				newGame();
-			}
 		})
 
 		$("#fastforward").click(function() {
@@ -728,14 +779,15 @@ var missComm = (function() {
 			} else {
 				gameSpeed = GAMESPEED.normal;
 			}
-			clearInterval(mover);
-			mover = setInterval(nextFrame, gameSpeed*10)
+			if (gameState == GAMESTATE.playing) {
+				clearInterval(mover);
+				mover = setInterval(nextFrame, gameSpeed)
+			}
 		})
 	}
 
 	return {
-		init: init,
-		listeners: listeners
+		init: init
 	}
 
 })();
@@ -743,5 +795,5 @@ var missComm = (function() {
 $(document).ready(function() {
 
 	missComm.init();
-	missComm.listeners();
+
 });
