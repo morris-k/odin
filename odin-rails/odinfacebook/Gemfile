@@ -56,5 +56,6 @@ group :test do
   gem 'launchy'
   gem 'guard-rspec'
   gem 'capybara'
+  gem 'capybara-webkit'
 end
 
