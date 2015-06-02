@@ -10,7 +10,7 @@ var carousel = (function() {
 
 	function initImages() {
 		imageFiles.forEach(function(file, i) {
-			$('.carousel').append('<img data-ind=' + i + ' src="' + file + '">');
+			$('.carousel').append('<img data-ind=' + i + ' class="main" src="' + file + '">');
 			$('.indicators').append('<div class="indicator" data-ind=' + i + '></div>');
 		});
 		$('img').hide();
@@ -50,12 +50,20 @@ var carousel = (function() {
 		$prev.show('slide', 1000);
 	}
 
+	function addPreviews() {
+		var $prev = $('.main').eq(getPrevIndex()).attr('src');
+		var $next = $('.main').eq(getNextIndex()).attr('src');
+		$('.prev').attr('src', $prev);
+		$('.next').attr('src', $next);
+	}
+
 	function forward(index) {
 		var nextIndex = index || getNextIndex();
-		var $current = $('img').eq(currentIndex);
-		var $next = $('img').eq(nextIndex);
-		slideLeft($current, $next);
+		var $current = $('.main').eq(currentIndex);
+		var $next = $('.main').eq(nextIndex);
+		slideLeft($current, $next)
 		currentIndex = nextIndex;
+		setTimeout(addPreviews, 1000);
 		showIndicator();
 	}
 
@@ -67,10 +75,11 @@ var carousel = (function() {
 			prevIndex = getPrevIndex();
 		}
 		console.log("back prev: ", prevIndex);
-		var $current = $('img').eq(currentIndex);
-		var $prev = $('img').eq(prevIndex);
+		var $current = $('.main').eq(currentIndex);
+		var $prev = $('.main').eq(prevIndex);
 		slideRight($current, $prev);
 		currentIndex = prevIndex;
+		setTimeout(addPreviews, 1000);
 		showIndicator();
 	}
 
@@ -92,6 +101,7 @@ var carousel = (function() {
 		currentIndex = 0;
 		nextIndex = 1;
 		showCurrent();
+		addPreviews();
 		slide();
 	}
 
@@ -99,9 +109,22 @@ var carousel = (function() {
 	function listeners() {
 		$('.carousel').hover(pause, slide);
 
+		$('.left').hover(function() {
+			$('.prev').fadeIn('slow');
+		}, function() {
+			$('.prev').fadeOut('slow');
+		})
+
+		$('.right').hover(function() {
+			$('.next').fadeIn('slow');
+		}, function() {
+			$('.next').fadeOut('slow');
+		})
+
 
 		$('.left').on('mousedown', function() {
 			$(this).addClass('push');
+			$('.prev').fadeOut('fast');
 			pause();
 			back();
 			slide();
@@ -111,6 +134,7 @@ var carousel = (function() {
 
 		$('.right').on('mousedown', function() {
 			$(this).addClass('push');
+			$('.next').fadeOut('fast');
 			pause();
 			forward();
 			slide();

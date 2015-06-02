@@ -63,14 +63,12 @@ img {
 }
 
 .left {
-    margin-left: 30px;
-    margin-right: 10px;
+    margin-right: 40px;
 }
 
 .right {
     float: right;
-    margin-right: 30px;
-    margin-left: 10px;
+    margin-left: 40px;
 }
 
 .left-arrow:after {
@@ -133,4 +131,19 @@ img {
 .push {
     box-shadow: inset 1px 1px 1px rgba(0,0,0,.3);
     background: #bbb;
+}
+
+.preview {
+    position: absolute;
+    width: 150px;
+    top: -100px;
+    border: 2px solid #eee;
+}
+
+.prev {
+    right: 0px;
+}
+
+.next {
+    left: 0px;
 }
