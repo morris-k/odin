@@ -3,6 +3,7 @@ html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abb
 html, body {
 	height: 100%;
 	width: 100%;
+    background: #333;
 }
 * {
     -webkit-font-smoothing: antialiased;
@@ -10,6 +11,8 @@ html, body {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
+
+
 .clearfix:before,  
 .clearfix:after {  
     content: " ";  
@@ -25,52 +28,109 @@ html, body {
 .container {
     position: relative;
     margin: 0 auto;
+    padding-top: 2em;
     height: 300px;
     width: 900px;
 }
 
 .carousel {
     width: 700px;
+    height: 300px;
     position: relative;
+/*    box-shadow: 2px 2px 3px rgba(0,0,0,.2), 
+        -1px -1px 3px rgba(0,0,0,.3);*/
 }
 
 .carousel, .left, .right {
     float: left;
 }
 
-
-.next-image, .prev-image {
+img {
+    position: absolute;
+}
+.next-image {
     display: none;
 }
 
-img {
-   position: absolute;
-}
-
 .left, .right {
-    width: 100px;
-    height: 40px;
-    margin-top: 120px;
+    width: 60px;
+    height: 60px;
+    margin-top: 110px;
     position: relative;
+    margin-bottom: 140px;
+    background: #ccc;
+    border-radius: 100%;
 }
 
+.left {
+    margin-left: 30px;
+    margin-right: 10px;
+}
 
-.left-arrow:before {
+.right {
+    float: right;
+    margin-right: 30px;
+    margin-left: 10px;
+}
+
+.left-arrow:after {
     content: "";
-    border-right: 40px solid #000;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
+    border-right: 30px solid #000;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
     display: block;
     position: absolute;
-    right: 20px;
+    right: 19px;
+    top: 15px;
+}
+
+.left-arrow:before {
+/*    content: "";
+    background: #ccc;
+    height: 80px;
+    width: 80px;
+    border-radius: 100%;
+    display: block;
+    position: absolute;
+    top: -20px;
+    right: -0px;*/
 }
 
 .right-arrow:before {
     content: "";
-    border-left: 40px solid #000;
-    border-top: 20px solid transparent;
-    border-bottom: 20px solid transparent;
+    border-left: 30px solid #000;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
     display: block;
     position: absolute;
-    right: 20px;
+    left: 19px;
+    top: 15px;
+}
+
+.indicators {
+    clear: both;
+    padding: 10px;
+    width: 700px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+
+.indicator {
+    height: 15px;
+    width: 15px;
+    border: 1px solid #aaa;
+    border-radius: 100%;
+    margin-left: 5px;
+    margin-right: 5px;
+    background: #aaa;
+}
+
+.active {
+    background: #fff;
+}
+
+.push {
+    box-shadow: inset 1px 1px 1px rgba(0,0,0,.3);
+    background: #bbb;
 }

@@ -1,87 +1,147 @@
-$(document).ready(function() {
+var carousel = (function() {
 
-	var imageFiles = ['diamond.png', 'grid.png', 'swirls.jpg', 'tibet.jpg'];
+	var currentIndex, mover;
+	var right = false;
+	var left = true;
 
-	function slider() {
+	var imageFiles = ['diamond.png', 'grid.png', 'swirls.jpg', 'tibet.jpg'].map(function(file) {
+			return 'assets/images/' + file;
+	});
 
-		var currentIndex, pictures, move;
-		var right = true;
-		var left = false;
+	function initImages() {
+		imageFiles.forEach(function(file, i) {
+			$('.carousel').append('<img data-ind=' + i + ' src="' + file + '">');
+			$('.indicators').append('<div class="indicator" data-ind=' + i + '></div>');
+		});
+		$('img').hide();
+	}
 
-		var initImages = function() {
-			pictures = imageFiles.map(function(file) { return('assets/images/' + file); });
-		};
+	function showCurrent() {
+		$('img[data-ind=' + currentIndex + ']').show();
+		showIndicator();
+	}
 
-		var stepImageForward = function() {
-			currentIndex = nxt();
-		};
-
-		var stepImageBack = function() {
-			currentIndex = prev();
+	function getNextIndex() {
+		if (nextIndex == undefined) {
+			return 1;
 		}
-
-		var prev = function() {
-			if (currentIndex == 0) {
-				return(pictures.length - 1);
-			} else {
-				return(currentIndex + 1);
-			}
+		if (currentIndex == imageFiles.length - 1) {
+				return 0;
+		} else {
+			return currentIndex + 1;
 		}
+	}
 
-		var nxt = function() {
-			if (currentIndex == pictures.length - 1) {
-				return(0);
-			} else {
-				return(currentIndex + 1);
-			}
+	function getPrevIndex() {
+		if (currentIndex == 0) {
+			return imageFiles.length - 1; 
+		} else {
+			return currentIndex - 1;
 		}
+	}
 
-		var current = function() {
-			return(currentIndex);
+	function slideLeft($current, $next) {
+		$current.hide('slide', 1000);
+		$next.show('slide', {direction: "right"}, 1000);
+	}
+
+	function slideRight($current, $prev) {
+		$current.hide('slide', {direction: "right"}, 1000);
+		$prev.show('slide', 1000);
+	}
+
+	function forward(index) {
+		var nextIndex = index || getNextIndex();
+		var $current = $('img').eq(currentIndex);
+		var $next = $('img').eq(nextIndex);
+		slideLeft($current, $next);
+		currentIndex = nextIndex;
+		showIndicator();
+	}
+
+	function back(index) {
+		console.log("back index: ", index);
+		if (index > -1) {
+			prevIndex = index;
+		} else {
+			prevIndex = getPrevIndex();
 		}
+		console.log("back prev: ", prevIndex);
+		var $current = $('img').eq(currentIndex);
+		var $prev = $('img').eq(prevIndex);
+		slideRight($current, $prev);
+		currentIndex = prevIndex;
+		showIndicator();
+	}
 
-		var setImages = function() {
-			console.log(currentIndex)
-			$('.current-image').attr('src', pictures[current()]);
-			$('.next-image').attr('src', pictures[nxt()]);
-			$('.prev-image').attr('src', pictures[prev()]);
-		}
+	function showIndicator() {
+		$('.active').removeClass("active");
+		$('.indicator').eq(currentIndex).addClass('active');
+	}
 
-		function slide() {
-			if (right = true) {
-				$('.next-image').css({
-					'z-index': '2'
-				})
-				$('.current-image').hide('slide', 1000);
-				$('.next-image').show('slide', 1000);
-			} else {
-				stepImageBack();
-				setImages();
-			}
-		}
+	function pause() {
+		clearInterval(mover);
+	}
 
+	function slide() {
+		mover = setInterval(forward, 5000);
+	}
 
+	function init() {
 		initImages();
 		currentIndex = 0;
-		setImages();
-		move = setInterval(slide, 5000)
+		nextIndex = 1;
+		showCurrent();
+		slide();
+	}
 
-		$('.carousel').hover(function () {
-			clearInterval(move);
-		}, function() {
-			move = setInterval(slide, 5000)
+
+	function listeners() {
+		$('.carousel').hover(pause, slide);
+
+
+		$('.left').on('mousedown', function() {
+			$(this).addClass('push');
+			pause();
+			back();
+			slide();
+		}).on('mouseup', function() {
+			$(this).removeClass('push');
 		});
 
+		$('.right').on('mousedown', function() {
+			$(this).addClass('push');
+			pause();
+			forward();
+			slide();
+		}).on('mouseup', function() {
+			$(this).removeClass('push');
+		});
 
-		$('.left').click(function() {
-			clearInterval(move);
-			left = true;
+		$('.indicator').click(function() {
+			console.log($(this).data('ind'))
+			pause();
+			var pos = $(this).data('ind');
+			console.log(pos < currentIndex);
+			if (pos < currentIndex) {
+				back(pos);
+			} else {
+				forward(pos);
+			}
+			slide();
+		});
 
-		})
-		
+	}
 
-	};
+	return {
+		init: init,
+		listeners: listeners
+	}
+})();
 
-	slider();
+$(document).ready(function() {
+
+	carousel.init();
+	carousel.listeners();
 
 });
