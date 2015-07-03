@@ -1,0 +1,12 @@
+<div class="post-container clearfix">
+<%= form_for(@post) do |f| %>
+	
+	<div class="form-group">
+		<%= f.text_area :content, :class => "form-control" %>
+	</div>
+	<div class="form-actions">
+		<%= f.submit "Submit", :class => 'btn btn-primary post-action-submit' %>
+	</div>
+
+<% end %>
+</div>

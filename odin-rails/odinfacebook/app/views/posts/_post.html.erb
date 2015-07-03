@@ -11,6 +11,13 @@
 		<div class="controls post-controls">
 			<div class="add-like">
 				<%= render 'like_unlike', subject: post %>
+				<% if post.user == current_user %>
+				<div class="post-actions">
+					<div class="delete">
+						<%= link_to 'delete', post_path(post), method: :delete %>
+					</div>
+				</div>
+				<% end %>
 			</div>
 		</div>
 	</div>

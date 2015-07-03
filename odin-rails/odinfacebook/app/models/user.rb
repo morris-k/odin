@@ -85,4 +85,8 @@ class User < ActiveRecord::Base
     User.select{|u| self.can_request(u) && self != u}
   end
 
+  def mutual_friends(user) 
+    User.select{ |u| u.is_friends_with(self) && u.is_friends_with(user)}
+  end
+
 end

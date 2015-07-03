@@ -1,4 +1,7 @@
-<div class="inf-posts">
+<div class="inf-posts col-md-8 col-md-offset-2 col-sm-10 col-sm-offset-1 col-xs-12">
+	<div class="new-post">
+		<%= render template: 'posts/new', :@post => @post %>
+	</div>
 	<div class="posts-index">
 		<%= render @posts %>
 	</div>

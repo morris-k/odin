@@ -1,17 +1,27 @@
 <%= provide(:title, @user.name) %>
 
-<h3><%= @user.name %></h3>
-
-<div class="friends">
+<div class="visible-xs-block col-xs-12">
+	<h3><%= @user.name %></h3>
+</div>
+<div class="col-xs-3 hidden-xs user-left">
+	<h3><%= @user.name %></h3>
+	<h5>Friends</h5>
 	<% @friends.each do |friend| %>
-	<div><%= friend.name %></div>
+	<div><%= link_to friend.name, friend %></div>
 	<% end %>
 </div>
 
-<div class="posts">
+<div class="col-xs-7 posts">
 	<% @user.posts.each do |post| %>
 	<div>
 		<%= render post %>
 	</div>
+	<% end %>
+</div>
+
+<div class="col-xs-2 user-right">
+	<h5>Mutual friends</h5>
+	<% current_user.mutual_friends(@user).each do |mf| %>
+		<div><%= link_to mf.name, mf %></div>
 	<% end %>
 </div>

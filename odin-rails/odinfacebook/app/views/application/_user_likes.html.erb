@@ -1,3 +1,3 @@
 <% if subject.liking_users.any? %>
-	<%= show_user_likes(subject.liking_users).html_safe %>
+	<%= show_user_likes(subject.liking_users, current_user).html_safe %>
 <% end %>

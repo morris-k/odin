@@ -1,7 +1,24 @@
 module ApplicationHelper
 
-	def show_user_likes(liking_users)
-		links = liking_users.map{ |x| user_link(x)}
+	def show_user_likes(liking_users, current_user)
+		prioritized = []
+		cu_likes = false
+		liking_users.each do |u|
+			if u != current_user
+				if current_user.is_friends_with(u)
+					prioritized.unshift(u)
+				else
+					prioritized.push(u)
+				end
+			else 
+				cu_likes = true
+			end
+		end
+		if cu_likes
+			prioritized.unshift(current_user)
+		end
+
+		links = prioritized.map{ |x| user_link(x)}
 		if liking_users.length == 1
 			return links[0] + " likes this post"
 		elsif liking_users.length < 5

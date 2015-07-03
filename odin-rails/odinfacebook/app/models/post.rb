@@ -7,5 +7,5 @@ class Post < ActiveRecord::Base
 	has_many :liking_users, through: :likes,
 													source: :user
 
-	has_many :comments, as: :subject
+	has_many :comments, as: :subject, dependent: :destroy
 end
