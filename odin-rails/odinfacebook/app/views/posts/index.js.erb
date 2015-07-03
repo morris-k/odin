@@ -1,0 +1,7 @@
+$("<%=j render(@posts) %>")
+  .appendTo($(".posts-index"));
+
+// Update pagination link
+
+$('.pagination')
+	.html("<%=j link_to_next_page(@posts, '', :remote => true) %>");

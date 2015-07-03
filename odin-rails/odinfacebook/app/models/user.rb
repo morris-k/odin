@@ -57,9 +57,9 @@ class User < ActiveRecord::Base
   	!self.has_been_requested_by(user)
   end
 
-  def feed
+  def feed(page)
     all_ids = friend_ids << self.id
-    Post.where(user_id: all_ids)
+    Post.where(user_id: all_ids).page(page).per(10)
   end
 
   def like(subject)

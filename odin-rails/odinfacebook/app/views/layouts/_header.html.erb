@@ -2,7 +2,7 @@
 	<div class="container-fluid">
 		<div class="navbar-header">
 			<%= link_to "FB", root_path, :class => "navbar-brand" %>
-		</div>
+		</div> 
 		<ul class="nav navbar-nav navbar-right">
 			<% if user_signed_in? %>
 				<li class="dropdown">
@@ -10,12 +10,12 @@
 					<% if current_user.pending_requests.any? %>
 					<ul class="dropdown-menu request-menu">
 						<% current_user.pending_requests.each do |request| %>
-						<ul class="list-inline request" data-request="<%= request.id %>">
+						<ul class="request list-inline" data-request="<%= request.id %>">
 							<li class="name">
 								<%= request.user.name %>
 							</li>
-							<li class=""><%= link_to "Accept", friendship_path(request), method: :put %></li>
-							<li><%= link_to "Reject", friendship_path(request), method: 'delete' %></li>
+							<li class="req-links"><%= link_to "Accept", friendship_path(request), method: :put %>
+								<%= link_to "Reject", friendship_path(request), method: 'delete' %></li>
 						</ul>
 						<% end %>
 					</ul>

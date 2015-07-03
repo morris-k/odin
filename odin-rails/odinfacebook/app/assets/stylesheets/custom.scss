@@ -65,6 +65,9 @@ body {
 .navbar {
 	background: $main_blue;
 	border-radius: 0;
+	.navbar-brand, div > ul > li > a {
+		color: #ffffff;
+	}
 }
 .comment-header, .comment-content {
 	display: inline-block;
@@ -81,7 +84,10 @@ body {
 }
 .request-menu {
 	width: 300px;
-	.fi {
-		padding: ;
+	.request {
+		padding: 10px 6px 10px 12px;
+		.req-links {
+			float: right
+		}
 	}
 }
